@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="BPTJ:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="BPTJ.war">
+      <element id="artifact" artifact-name="BPTJ:war exploded" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.jack.security.persistence.SecurityUserMapper">
+	<sql id="findUser_sql">
+		SELECT 
+			  u.id,
+			  u.user_name,
+			  u.passwd_plaintext,
+			  u.passwd_salt,
+			  u.id_card,
+			  u.tel_no,
+			  u.qq_no,
+			  u.email,
+			  u.headpic_path,
+			  u.status,
+			  r.role_id,
+			  sr.role_name,
+			  ri.right_id,
+			  st.right_name,
+			  st.right_url,
+			  st.right_icon
+	    FROM  security_user u 
+	    LEFT JOIN
+	    	  security_user_role_rel r on u.id=r.user_id
+	    LEFT JOIN 
+	    	  security_role sr on sr.id = r.role_id
+	    LEFT JOIN
+	    	  security_role_right_rel ri on sr.id=ri.role_id
+	    LEFT JOIN
+	    	  security_right st on st.id = ri.right_id
+	</sql>
+	<resultMap type="SecurityUser" id="resultUser_Role_Rights">
+        <id property="id" column="id"/>
+        <result property="userName" column="user_name"/>
+        <result property="plainPasswd" column="passwd_plaintext"/>
+        <result property="salt" column="passwd_salt"/>
+        <result property="phone" column="phone"/>
+        <result property="idCard" column="id_card"/>
+        <result property="email" column="email"/>
+        <result property="tencentNo" column="qq_no"/>
+        <result property="headPicPath" column="headpic_path"/>
+        <result property="userStatus" column="status"/>
+        <collection property="roles" ofType="SecurityRole">
+			<result column="role_id" property="roleId"/>
+			<result column="role_name" property="roleName"/>
+			<collection property="rights" ofType="SecurityPermission">
+				<result column="right_id" property="rightId"/>
+				<result column="right_name" property="rightName"/>
+				<result column="right_url" property="rightUrl"/>
+				<result column="right_icon" property="rightIcon"/>
+				<result column="right_sign" property="rightSign"/>
+			</collection>
+		</collection>
+    </resultMap>
+
+	<select id="findByNanme" parameterType="string" resultMap="resultUser_Role_Rights">
+		<include refid="findUser_sql" />  
+		<where>
+			u.user_name = #{name}
+			AND u.is_delete = 0
+		</where>
+	</select>
+
+	<update id="lockAccount" parameterType="string">
+		  UPDATE SECURITY_USER
+				 SET STATUS = 0
+		  <where>
+			     id=#{id}
+		  </where>
+	</update>
+
+	<update id="relockAccount" parameterType="string">
+		UPDATE SECURITY_USER
+		SET STATUS = 1
+		<where>
+			id=#{id}
+		</where>
+	</update>
+
+</mapper>
