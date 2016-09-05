@@ -40,7 +40,7 @@ CREATE TABLE `security_menu` (
   `update_date` datetime DEFAULT NULL,
   `delete_by` varchar(50) DEFAULT NULL,
   `delete_date` datetime DEFAULT NULL,
-  `is_delete` int(1) DEFAULT '0',
+  `is_deleted` int(1) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -51,6 +51,7 @@ CREATE TABLE `security_menu` (
 
 LOCK TABLES `security_menu` WRITE;
 /*!40000 ALTER TABLE `security_menu` DISABLE KEYS */;
+INSERT INTO `security_menu` VALUES ('1','sys_management','系统管理','SystemManage','/',1,NULL,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0);
 /*!40000 ALTER TABLE `security_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -71,7 +72,7 @@ CREATE TABLE `security_right` (
   `update_by` varchar(50) DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
   `delete_by` varchar(50) DEFAULT NULL,
-  `is_delete` int(1) DEFAULT '0',
+  `is_deleted` int(1) DEFAULT '0',
   `delete_date` datetime DEFAULT NULL,
   `right_sign` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -84,7 +85,7 @@ CREATE TABLE `security_right` (
 
 LOCK TABLES `security_right` WRITE;
 /*!40000 ALTER TABLE `security_right` DISABLE KEYS */;
-INSERT INTO `security_right` VALUES ('1','create','createUserUrl',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'User'),('2','modify','modifyUserUrl',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'User'),('3','view','viewUserUrl',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'User'),('4','delete','deleteUrl',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'User');
+INSERT INTO `security_right` VALUES ('1','create','createUserUrl',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'User'),('2','modify','modifyUserUrl',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'User'),('3','view','viewUserUrl',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'User'),('4','delete','deleteUrl',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'User'),('5','view','/',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'SystemManage');
 /*!40000 ALTER TABLE `security_right` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -104,7 +105,7 @@ CREATE TABLE `security_role` (
   `update_date` datetime DEFAULT NULL,
   `delete_by` varchar(50) DEFAULT NULL,
   `delete_date` datetime DEFAULT NULL,
-  `is_delete` int(1) DEFAULT NULL,
+  `is_deleted` int(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `role_name` (`role_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -116,7 +117,7 @@ CREATE TABLE `security_role` (
 
 LOCK TABLES `security_role` WRITE;
 /*!40000 ALTER TABLE `security_role` DISABLE KEYS */;
-INSERT INTO `security_role` VALUES ('1','test',NULL,NULL,NULL,NULL,NULL,NULL,NULL),('2','system',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `security_role` VALUES ('1','test',NULL,NULL,NULL,NULL,NULL,NULL,0),('2','system',NULL,NULL,NULL,NULL,NULL,NULL,0);
 /*!40000 ALTER TABLE `security_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -139,7 +140,7 @@ CREATE TABLE `security_role_right_rel` (
 
 LOCK TABLES `security_role_right_rel` WRITE;
 /*!40000 ALTER TABLE `security_role_right_rel` DISABLE KEYS */;
-INSERT INTO `security_role_right_rel` VALUES ('1','3'),('2','1'),('2','2'),('2','3');
+INSERT INTO `security_role_right_rel` VALUES ('1','3'),('2','1'),('2','2'),('2','3'),('2','4'),('2','5');
 /*!40000 ALTER TABLE `security_role_right_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -164,7 +165,7 @@ CREATE TABLE `security_user` (
   `update_by` varchar(50) DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
   `delete_by` varchar(50) DEFAULT NULL,
-  `is_delete` int(1) DEFAULT '0',
+  `is_deleted` int(1) DEFAULT '0',
   `delete_date` datetime DEFAULT NULL,
   `login_state` int(1) DEFAULT '0',
   `headpic_path` varchar(150) DEFAULT NULL,
@@ -216,4 +217,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-09-05 14:58:22
+-- Dump completed on 2016-09-05 17:12:33

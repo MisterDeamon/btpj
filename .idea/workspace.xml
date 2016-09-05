@@ -2,16 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="111d9667-4d6d-4ae8-bf18-0a40c1ed1347" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sql/bpj.sql" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/jack/security/persistence/SecurityRoleMapper.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/jack/utils/SecurityConstants.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/com/jack/security/persistence/SecurityRoleMapper.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/BPTJ.war" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/m2e-wtp/web-resources/META-INF/MANIFEST.MF" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/m2e-wtp/web-resources/META-INF/maven/com.jack/BPTJ/pom.properties" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/m2e-wtp/web-resources/META-INF/maven/com.jack/BPTJ/pom.xml" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/BPTJ/WEB-INF/classes/com/jack/Test.class" afterPath="$PROJECT_DIR$/target/BPTJ/WEB-INF/classes/com/jack/Test.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/BPTJ/WEB-INF/classes/com/jack/security/persistence/BaseMapper.class" afterPath="$PROJECT_DIR$/target/BPTJ/WEB-INF/classes/com/jack/security/persistence/BaseMapper.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/BPTJ/WEB-INF/classes/com/jack/security/service/SecurityUserRoleService.class" afterPath="$PROJECT_DIR$/target/BPTJ/WEB-INF/classes/com/jack/security/service/SecurityUserRoleService.class" />
@@ -47,16 +37,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/jack/utils/Exceptions.class" afterPath="$PROJECT_DIR$/target/classes/com/jack/utils/Exceptions.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/jack/utils/Page.class" afterPath="$PROJECT_DIR$/target/classes/com/jack/utils/Page.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/jack/utils/StringUtils.class" afterPath="$PROJECT_DIR$/target/classes/com/jack/utils/StringUtils.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BPTJ.iml" afterPath="$PROJECT_DIR$/BPTJ.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jack/security/service/SecurityUserRoleService.java" afterPath="$PROJECT_DIR$/src/main/java/com/jack/security/service/SecurityUserRoleService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jack/security/shiro/ShiroDbRealm.java" afterPath="$PROJECT_DIR$/src/main/java/com/jack/security/shiro/ShiroDbRealm.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jack/security/webapp/IndexController.java" afterPath="$PROJECT_DIR$/src/main/java/com/jack/security/webapp/IndexController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jack/security/webapp/SecurityLoginController.java" afterPath="$PROJECT_DIR$/src/main/java/com/jack/security/webapp/SecurityLoginController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jack/utils/StringUtils.java" afterPath="$PROJECT_DIR$/src/main/java/com/jack/utils/StringUtils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/com/jack/security/persistence/SecurityUserMapper.xml" afterPath="$PROJECT_DIR$/src/main/resources/com/jack/security/persistence/SecurityUserMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/pages/management/index/index.jsp" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/pages/management/index/index.jsp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/BPTJ/WEB-INF/classes/com/jack/security/persistence/SecurityUserMapper.xml" afterPath="$PROJECT_DIR$/target/BPTJ/WEB-INF/classes/com/jack/security/persistence/SecurityUserMapper.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/BPTJ/WEB-INF/pages/management/index/index.jsp" afterPath="$PROJECT_DIR$/target/BPTJ/WEB-INF/pages/management/index/index.jsp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/jack/security/persistence/SecurityUserMapper.xml" afterPath="$PROJECT_DIR$/target/classes/com/jack/security/persistence/SecurityUserMapper.xml" />
@@ -1298,15 +1279,22 @@
       <option name="number" value="Default" />
       <updated>1473040211020</updated>
       <workItem from="1473040212488" duration="5852000" />
-      <workItem from="1473062353672" duration="3829000" />
+      <workItem from="1473062353672" duration="3856000" />
     </task>
+    <task id="LOCAL-00001" summary="btpj__jack">
+      <created>1473066699634</created>
+      <option name="number" value="00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1473066699634</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="9681000" />
+    <option name="totallyTimeSpent" value="9708000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1616" height="886" extended-state="0" />
+    <frame x="-8" y="-8" width="1616" height="886" extended-state="1" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1342,7 +1330,8 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <option name="LAST_COMMIT_MESSAGE" value="" />
+    <MESSAGE value="btpj__jack" />
+    <option name="LAST_COMMIT_MESSAGE" value="btpj__jack" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
