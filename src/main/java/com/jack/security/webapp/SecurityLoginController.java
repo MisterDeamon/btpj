@@ -32,13 +32,14 @@ public class SecurityLoginController {
 	@Autowired
 	private SecurityUserService userService;
 
-	@RequestMapping(value = "/login",method = RequestMethod.GET)
+	@RequestMapping(value = "login",method = RequestMethod.GET)
 	public String login(){
 		return LOGIN;
 	}
 
 	@RequestMapping(value = "/checkName",method=RequestMethod.GET,produces ="application/json;charset=UTF-8" )
 	public @ResponseBody String checkName(@RequestParam String userName) throws UnsupportedEncodingException {
+
 		String encode = StringUtils.getEncoding(userName);
 
 		userName = new String(userName.getBytes(encode),"UTF-8");

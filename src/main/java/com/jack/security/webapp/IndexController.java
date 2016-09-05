@@ -32,6 +32,8 @@ public class IndexController {
 
         ShiroDbRealm.ShiroUser shiroUser = (ShiroDbRealm.ShiroUser) subject
                 .getPrincipal();
+
+
         return INDEX;
     }
 }

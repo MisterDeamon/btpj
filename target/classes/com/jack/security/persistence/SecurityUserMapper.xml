@@ -3,7 +3,22 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
         
 <mapper namespace="com.jack.security.persistence.SecurityUserMapper">
-	<sql id="findUser_sql">
+	<sql id="findUserByName_sql">
+		SELECT
+			  u.id,
+			  u.user_name,
+			  u.passwd_plaintext,
+			  u.passwd_salt,
+			  u.headpic_path,
+			  u.status,
+			  r.role_id
+	    FROM  security_user u
+	    LEFT JOIN
+	    	  security_user_role_rel r on u.id=r.user_id
+	    LEFT JOIN
+	    	  security_role sr on sr.id = r.role_id
+	</sql>
+	<sql id="findUserAllFields_sql">
 		SELECT 
 			  u.id,
 			  u.user_name,
@@ -56,10 +71,10 @@
     </resultMap>
 
 	<select id="findByNanme" parameterType="string" resultMap="resultUser_Role_Rights">
-		<include refid="findUser_sql" />  
+		<include refid="findUserByName_sql" />
 		<where>
 			u.user_name = #{name}
-			AND u.is_delete = 0
+			AND u.is_deleted = 0
 		</where>
 	</select>
 

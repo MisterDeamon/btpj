@@ -103,7 +103,12 @@ public class ShiroDbRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         ShiroUser shiroUser = (ShiroUser) principals.fromRealm(this.getName())
                 .iterator().next();
-        List<SecurityRole> userRoles =shiroUser.getUser().getRoles();
+        List<SecurityRole> userRoles =new ArrayList<SecurityRole>();
+
+        SecurityUser user = shiroUser.getUser();
+        for(SecurityRole role:user.getRoles()){
+            userRoles.add(securityUserRoleService.findById(role.getRoleId()));
+        }
 
         if (!userRoles.isEmpty()) {
             SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
@@ -111,8 +116,8 @@ public class ShiroDbRealm extends AuthorizingRealm {
                 // 基于Permission的权限信息
                 Set<String> permissionList = new HashSet<String>();
                 for(SecurityPermission permission:userRole.getRights()){
-                    permissionList.add(permission.getRightName());
-                    info.addObjectPermission(permission);
+                    permissionList.add(permission.getRightSign()+":"+permission.getRightName());
+//                    info.addObjectPermission(permission);
                 }
                 info.addStringPermissions(permissionList);
             }

@@ -40,4 +40,8 @@ public class StringUtils {
         }
         return "";
     }
+
+    public boolean isNotNullAndEmpty(String str){
+        return str!=null&&!"".equals(str);
+    }
 }
