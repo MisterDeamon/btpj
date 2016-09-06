@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.jack.security.persistence.SecurityMenuMapper">
+	<sql id="findMenu_sql">
+		SELECT
+			  m.id,
+			  m.description,
+			  m.name,
+			  m.url,
+			  m.right_sn AS rightSn,
+			  m.icon ,
+			  m.parent_id AS parentId,
+			  m.priority
+	    FROM  security_menu m
+	</sql>
+
+	<!--<resultMap type="SecurityMenu" id="resultMenu">-->
+        <!--<id property="id" column="id"/>-->
+        <!--<result column="description" property="description"/>-->
+        <!--<result column="name" property="name"/>-->
+        <!--<result column="url" property="url"/>-->
+        <!--<result column="icon" property="icon"/>-->
+        <!--<result column="parent_id" property="parentId"/>-->
+        <!--<result column="right_sn" property="rightSn"/>-->
+        <!--<collection property="childrenMenus" ofType="SecurityMenu">-->
+		<!--</collection>-->
+    <!--</resultMap>-->
+
+	<select id="findById" parameterType="string" resultType="SecurityMenu">
+		<include refid="findMenu_sql" />
+		<where>
+			m.id = #{id} AND
+			m.is_deleted = 0
+			ORDER BY m.priority ASC
+		</where>
+	</select>
+
+	<select id="findAllParentMenus"  resultType="SecurityMenu">
+		<include refid="findMenu_sql" />
+		<where>
+				m.is_deleted = 0 AND
+			<trim suffixOverrides="AND">
+				m.is_parent = 1 AND
+			</trim>
+			ORDER BY m.priority ASC
+		</where>
+	</select>
+
+	<select id="findChildrenMenus" parameterType="string" resultType="SecurityMenu">
+		<include refid="findMenu_sql" />
+		<where>
+			m.is_deleted = 0 AND
+			m.parent_id = #{parentId} AND
+			<trim suffixOverrides="AND">
+				m.is_parent = 0 AND
+			</trim>
+			ORDER BY m.priority ASC
+		</where>
+	</select>
+
+</mapper>

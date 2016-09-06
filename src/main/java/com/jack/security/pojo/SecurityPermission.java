@@ -1,9 +1,11 @@
 package com.jack.security.pojo;
 
 import org.apache.shiro.authz.Permission;
+import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
 
+@Repository
 public class SecurityPermission extends BaseEntity implements Serializable,Permission {
 
 	/**

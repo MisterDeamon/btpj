@@ -11,7 +11,7 @@ import com.jack.security.service.mybatis.AbstractService;
 
 
 @Service
-public class SecurityUserService extends AbstractService<SecurityUser,Integer,SecurityUserMapper> {
+public class SecurityUserService extends AbstractService<SecurityUser,String,SecurityUserMapper> {
 	
 	@Autowired
 	public void setMapper(SecurityUserMapper mapper){
