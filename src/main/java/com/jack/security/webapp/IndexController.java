@@ -64,17 +64,47 @@ public class IndexController {
             }
         }
 
-        List<SecurityMenu> parentMenus = sercurityMenuService.findAllParentMenus();
+        List<SecurityMenu> parentMenus =getSysMenu(sercurityMenuService.findAllParentMenus(),permissionList);
+
+        request.getSession().setAttribute("menus",parentMenus);
+        request.getSession().setAttribute("user",shiroUser.getUser());
+        return INDEX;
+    }
+
+    /**
+     * 鉴权一级菜单、二级菜单
+     * @param parentMenus
+     * @param permissionList
+     * @return
+     */
+    private List<SecurityMenu> getSysMenu(List<SecurityMenu> parentMenus, Set<String> permissionList){
         List<SecurityMenu> parentMenusChecked = new ArrayList<SecurityMenu>();
 
         for(SecurityMenu menu:parentMenus){
+
+            //鉴权一级菜单
             if(permissionList.contains(menu.getRightSn()+":" +SecurityConstants.OPERATION_VIEW)){
+
+                List<SecurityMenu> childrenMenus = sercurityMenuService.findChildrenMenus(menu.getId());
+                List<SecurityMenu> childrenMenusChecked = new ArrayList<SecurityMenu>();
+
+                if(null!=childrenMenus&&childrenMenus.size()>0){
+                    for(int i=0;i<childrenMenus.size();i++){
+                        //鉴权一级菜单下的二级菜单
+                        if(permissionList.contains(childrenMenus.get(i).getRightSn()+":" +SecurityConstants.OPERATION_VIEW)){
+                            childrenMenusChecked.add(childrenMenus.get(i));
+                        }
+                    }
+                }
+
+                if(0<childrenMenusChecked.size()){
+                    menu.setChildrenMenus(childrenMenusChecked);
+                }
                 parentMenusChecked.add(menu);
             }
         }
 
-        request.getSession().setAttribute("menus",parentMenusChecked);
-        request.getSession().setAttribute("user",shiroUser.getUser());
-        return INDEX;
+        return parentMenusChecked;
     }
+
 }

@@ -5,7 +5,7 @@
 <mapper namespace="com.jack.security.persistence.SecurityRoleMapper">
 	<sql id="findRole_sql">
 		SELECT
-			  r.id,
+			  r.id AS roleId,
 			  r.role_name,
 			  rtr.right_id,
 			  rt.right_name,

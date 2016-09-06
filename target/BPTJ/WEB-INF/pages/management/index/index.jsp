@@ -21,7 +21,7 @@
 
             <form class="navbar-form navbar-left">
                 <button type="submit" class="fa fa-search"></button>
-                <input type="text" class="form-control" placeholder="Search..."></a>
+                <input type="text" class="form-control" placeholder="搜索..."></a>
             </form>
 
             <ul class="nav navbar-nav navbar-right">
@@ -100,8 +100,8 @@
                 <%--user info and setting--%>
                 <li class="dropdown visible-md visible-lg">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img class="user-avatar"
-                                                                                    src="<%=protonPath%>/assets/img/avatar.jpg"
-                                                                                    alt="user-mail">jhonsmith@mail.com</a>
+                                                                                    src="<%=basePath%>/file/upload/headpic/${user.headPicPath}"
+                                                                                    alt="user-mail">${user.email}</a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-menu-header">
                             <strong>Account</strong>
@@ -116,7 +116,7 @@
                         <li><a href="<%=basePath%>/logout"><i class="fa fa-sign-out"></i> Logout</a></li>
                     </ul>
                 </li>
-                <li><a href="index.html"><i class="fa fa-power-off"></i></a></li>
+                <li><a href="<%=basePath%>/logout"><i class="fa fa-power-off"></i></a></li>
             </ul>
         </div>
     </div>
@@ -139,50 +139,26 @@
                     <div class="sidebar-menu">
                         <ul class="nav nav-sidebar">
                             <li>
-                                <a href="index.html"><i class="fa fa-laptop"></i><span class="text">首 页</span></a>
+                                <a href="<%=basePath%>/management/index"><i class="fa fa-laptop"></i><span class="text">首 页</span></a>
                             </li>
-                            <%--系统管理--%>
+                            <c:forEach var="menu" items="${menus}">
                             <li>
-                                <a href="#">
-                                    <i class="fa fa-file-text"></i><span class="text"> 系统管理</span>
+                                <a href="${menu.url}">
+                                    <i class="fa fa-file-text"></i><span class="text">${menu.name}</span>
+                                <c:if  test="${fn:length(menu.childrenMenus)>0}">
                                     <span class="fa fa-angle-down pull-right"></span>
                                 </a>
-                                <ul class="nav sub">
-                                    <li><a href="page-activity.html"><i class="fa fa-car"></i><span class="text"> Activity</span></a></li>
-                                    <li><a href="page-inbox.html"><i class="fa fa-envelope"></i><span class="text"> Mail</span></a></li>
-                                    <li><a href="page-invoice.html"><i class="fa fa-credit-card"></i><span class="text"> Invoice</span></a>
-                                    </li>
-                                </ul>
+                                    <ul class="nav sub">
+                                        <c:forEach var="child" items="${menu.childrenMenus}">
+                                            <li><a href="${child.url}"><i class="fa fa-car"></i><span class="text"> ${child.name}</span></a></li>
+                                        </c:forEach>
+                                    </ul>
+                                </c:if>
+                                <c:if  test="${fn:length(menu.childrenMenus)==0}">
+                                    </a>
+                                </c:if>
                             </li>
-
-                            <%--其他设置--%>
-                            <li>
-                                <a href="#"><i class="fa fa-list-alt"></i><span class="text"> Forms</span> <span
-                                        class="fa fa-angle-down pull-right"></span></a>
-                                <ul class="nav sub">
-                                    <li><a href="form-elements.html"><i class="fa fa-indent"></i><span class="text"> Form elements</span></a>
-                                    </li>
-                                    <li><a href="form-wizard.html"><i class="fa fa-tags"></i><span
-                                            class="text"> Wizard</span></a></li>
-                                    <li><a href="form-dropzone.html"><i class="fa fa-plus-square-o"></i><span class="text"> Dropzone Upload</span></a>
-                                    </li>
-                                    <li><a href="form-x-editable.html"><i class="fa fa-pencil"></i><span class="text"> X-editable</span></a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li><a href="table.html"><i class="fa fa-table"></i><span class="text"> Tables</span></a></li>
-                            <li>
-                                <a href="#"><i class="fa fa-signal"></i><span class="text"> Visual Chart</span> <span
-                                        class="fa fa-angle-down pull-right"></span></a>
-                                <ul class="nav sub">
-                                    <li><a href="chart-flot.html"><i class="fa fa-random"></i><span
-                                            class="text"> Flot Chart</span></a></li>
-                                    <li><a href="chart-xchart.html"><i class="fa fa-retweet"></i><span
-                                            class="text"> xChart</span></a></li>
-                                    <li><a href="chart-other.html"><i class="fa fa-bar-chart-o"></i><span class="text"> Other</span></a>
-                                    </li>
-                                </ul>
-                            </li>
+                            </c:forEach>
                         </ul>
                     </div>
                 </div>
@@ -208,6 +184,18 @@
 
             <!-- start: Content -->
             <div class="main">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h3 class="page-header"><i class="fa fa-home"></i>首页</h3>
+                        <ol class="breadcrumb">
+                            <li><i class="fa fa-home"></i>Home</li>
+                        </ol>
+                    </div>
+                </div>
+
+
+
             </div>
         </div><!--/container-->
 

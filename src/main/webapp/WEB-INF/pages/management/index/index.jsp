@@ -21,7 +21,7 @@
 
             <form class="navbar-form navbar-left">
                 <button type="submit" class="fa fa-search"></button>
-                <input type="text" class="form-control" placeholder="Search..."></a>
+                <input type="text" class="form-control" placeholder="搜索..."></a>
             </form>
 
             <ul class="nav navbar-nav navbar-right">
@@ -116,7 +116,7 @@
                         <li><a href="<%=basePath%>/logout"><i class="fa fa-sign-out"></i> Logout</a></li>
                     </ul>
                 </li>
-                <li><a href="index.html"><i class="fa fa-power-off"></i></a></li>
+                <li><a href="<%=basePath%>/logout"><i class="fa fa-power-off"></i></a></li>
             </ul>
         </div>
     </div>
@@ -139,32 +139,26 @@
                     <div class="sidebar-menu">
                         <ul class="nav nav-sidebar">
                             <li>
-                                <a href="index.html"><i class="fa fa-laptop"></i><span class="text">首 页</span></a>
+                                <a href="<%=basePath%>/management/index"><i class="fa fa-laptop"></i><span class="text">首 页</span></a>
                             </li>
-                            <%--系统管理--%>
-
                             <c:forEach var="menu" items="${menus}">
                             <li>
-                                <a href="#">
+                                <a href="${menu.url}">
                                     <i class="fa fa-file-text"></i><span class="text">${menu.name}</span>
-
                                 <c:if  test="${fn:length(menu.childrenMenus)>0}">
                                     <span class="fa fa-angle-down pull-right"></span>
                                 </a>
                                     <ul class="nav sub">
                                         <c:forEach var="child" items="${menu.childrenMenus}">
-                                            <li><a href="page-activity.html"><i class="fa fa-car"></i><span class="text"> ${child.name}</span></a></li>
+                                            <li><a href="${child.url}" target=""><i class="fa fa-car"></i><span class="text"> ${child.name}</span></a></li>
                                         </c:forEach>
                                     </ul>
                                 </c:if>
                                 <c:if  test="${fn:length(menu.childrenMenus)==0}">
                                     </a>
                                 </c:if>
-
                             </li>
                             </c:forEach>
-
-                            <%--其他设置--%>
                         </ul>
                     </div>
                 </div>
@@ -189,17 +183,19 @@
             <!-- end: Main Menu -->
 
             <!-- start: Content -->
-            <div class="main">
-                <%--<c:forEach var="menu" items="${menus}">--%>
-                    <%--<li>${menu}</li>--%>
-                <%--</c:forEach>--%>
-                mainValue
-                <shiro:hasPermission name="SystemManage:create">
-                        <li><a class="add" target="dialog" width="550" height="350" mask="true" href="<%=basePath %>/management/security/organization/create" ><span>添加</span></a></li>
-                </shiro:hasPermission>
+            <div class="main" id="main">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h3 class="page-header"><i class="fa fa-home"></i>首页</h3>
+                        <ol class="breadcrumb">
+                            <li><i class="fa fa-home"></i>Home</li>
+                        </ol>
+                    </div>
+                </div>
+
             </div>
         </div><!--/container-->
-
 
 
         <div class="modal fade" id="myModal">

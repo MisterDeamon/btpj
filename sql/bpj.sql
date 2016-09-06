@@ -31,7 +31,7 @@ CREATE TABLE `security_menu` (
   `right_sn` varchar(20) DEFAULT NULL,
   `url` varchar(200) DEFAULT NULL,
   `priority` int(11) DEFAULT NULL,
-  `pratent_id` varchar(30) DEFAULT NULL,
+  `parent_id` varchar(30) DEFAULT NULL,
   `is_parent` int(1) DEFAULT '0',
   `icon` varchar(40) DEFAULT NULL,
   `create_by` varchar(50) DEFAULT NULL,
@@ -51,7 +51,7 @@ CREATE TABLE `security_menu` (
 
 LOCK TABLES `security_menu` WRITE;
 /*!40000 ALTER TABLE `security_menu` DISABLE KEYS */;
-INSERT INTO `security_menu` VALUES ('1','sys_management','系统管理','SystemManage','/',1,NULL,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0);
+INSERT INTO `security_menu` VALUES ('1','sys_management','系统管理','SystemManage','javascript:;',1,NULL,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0),('2','front_management','前台设置','FrontManage','javascript:;',99,NULL,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0),('3','user_management','用户管理','User','/management/security/user',2,'1',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0),('4','role_management','角色管理','Role','/',3,'1',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0);
 /*!40000 ALTER TABLE `security_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -72,7 +72,7 @@ CREATE TABLE `security_right` (
   `update_by` varchar(50) DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
   `delete_by` varchar(50) DEFAULT NULL,
-  `is_deleted` int(1) DEFAULT '0',
+  `is_deleted` int(1) unsigned DEFAULT '0',
   `delete_date` datetime DEFAULT NULL,
   `right_sign` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -85,7 +85,7 @@ CREATE TABLE `security_right` (
 
 LOCK TABLES `security_right` WRITE;
 /*!40000 ALTER TABLE `security_right` DISABLE KEYS */;
-INSERT INTO `security_right` VALUES ('1','create','createUserUrl',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'User'),('2','modify','modifyUserUrl',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'User'),('3','view','viewUserUrl',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'User'),('4','delete','deleteUrl',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'User'),('5','view','/',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'SystemManage');
+INSERT INTO `security_right` VALUES ('1','create','createUserUrl',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'User'),('2','modify','modifyUserUrl',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'User'),('3','view','viewUserUrl',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'User'),('4','delete','deleteUrl',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'User'),('5','view','/',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'SystemManage'),('6','view','/',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'FrontManage'),('7','edit','/',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'SystemManage'),('8','view','/',NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'Role');
 /*!40000 ALTER TABLE `security_right` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -140,7 +140,7 @@ CREATE TABLE `security_role_right_rel` (
 
 LOCK TABLES `security_role_right_rel` WRITE;
 /*!40000 ALTER TABLE `security_role_right_rel` DISABLE KEYS */;
-INSERT INTO `security_role_right_rel` VALUES ('1','3'),('2','1'),('2','2'),('2','3'),('2','4'),('2','5');
+INSERT INTO `security_role_right_rel` VALUES ('1','3'),('2','1'),('2','2'),('2','3'),('2','4'),('2','5'),('2','6'),('2','7'),('2','8');
 /*!40000 ALTER TABLE `security_role_right_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -181,7 +181,7 @@ CREATE TABLE `security_user` (
 
 LOCK TABLES `security_user` WRITE;
 /*!40000 ALTER TABLE `security_user` DISABLE KEYS */;
-INSERT INTO `security_user` VALUES ('1','Jack','b6123feca70fbed23d858048bc333cf9c7b07597','696b4eebec49b9ce','123456',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,'Jack1001.jpg',1),('2','Lucy','123456','','123457',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,NULL,1);
+INSERT INTO `security_user` VALUES ('1','Jack','b6123feca70fbed23d858048bc333cf9c7b07597','696b4eebec49b9ce','123456',NULL,NULL,'1023459876@qq.com',NULL,NULL,NULL,NULL,NULL,0,NULL,0,'Jack1001.jpg',1),('2','Lucy','123456','','123457',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,NULL,1);
 /*!40000 ALTER TABLE `security_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -217,4 +217,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-09-05 17:12:33
+-- Dump completed on 2016-09-06 17:25:47

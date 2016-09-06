@@ -11,6 +11,10 @@
 			  u.passwd_salt,
 			  u.headpic_path,
 			  u.status,
+			  u.id_card,
+			  u.tel_no,
+			  u.qq_no,
+			  u.email,
 			  r.role_id
 	    FROM  security_user u
 	    LEFT JOIN
@@ -77,7 +81,12 @@
 			AND u.is_deleted = 0
 		</where>
 	</select>
-
+	<select id="findAll" parameterType="string" resultMap="resultUser_Role_Rights">
+		<include refid="findUserByName_sql" />
+		<where>
+			u.is_deleted = 0
+		</where>
+	</select>
 	<update id="lockAccount" parameterType="string">
 		  UPDATE SECURITY_USER
 				 SET STATUS = 0
