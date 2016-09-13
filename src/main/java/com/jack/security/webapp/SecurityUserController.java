@@ -39,6 +39,7 @@ public class SecurityUserController {
 
     private static final String LIST = "management/security/user/list";
     private static final String CREATE = "management/security/user/create";
+    private static final String MODIFY = "management/security/user/modify";
 
 
     @RequestMapping(value={"/list",""},method= RequestMethod.GET)
@@ -75,8 +76,8 @@ public class SecurityUserController {
             user.setPlainPasswd(request.getParameter("password"));
             user.setCreatedDate(new Date());
             user.setCreatedBy(shiroUser.getUser().getUserName());
-            user.setUserStatus(0);
-
+            user.setUpdatedDate(new Date());
+            user.setUpdatedBy(shiroUser.getUser().getUserName());
 
             if (file != null) {
                 String orignFileName = file.getOriginalFilename();
@@ -108,6 +109,60 @@ public class SecurityUserController {
         return result;
     }
 
+
+    @RequestMapping(value="/modify",method = RequestMethod.GET)
+    @RequiresPermissions("User:modify")
+    public  String modify(){
+        return MODIFY;
+    }
+
+    @RequestMapping(value="/modify",method = RequestMethod.POST,produces ="application/json;charset=UTF-8" )
+    @RequiresPermissions("User:modify")
+    public @ResponseBody
+    String modify(Model model, HttpServletRequest request, SecurityUser user, @RequestParam("file")MultipartFile file){
+
+        Map<String,Object> map = new HashMap<String,Object>();
+
+        Subject subject = SecurityUtils.getSubject();
+
+        ShiroDbRealm.ShiroUser shiroUser = (ShiroDbRealm.ShiroUser) subject
+                .getPrincipal();
+        String result = "";
+        try {
+            user.setPlainPasswd(request.getParameter("password"));
+            user.setUpdatedDate(new Date());
+            user.setUpdatedBy(shiroUser.getUser().getUserName());
+
+            if (file != null) {
+                String orignFileName = file.getOriginalFilename();
+                String fileName = StringUtils.getFormatDate_2() + "." + orignFileName.substring(orignFileName.lastIndexOf(".") + 1);
+
+                boolean headpicEnd = uploadHeadPic(request, file, "/file/upload/headpic", fileName);
+
+                if (headpicEnd) {
+                    user.setHeadPicPath(fileName);
+                }
+            }
+            userService.save(user);
+            map.put("success", true);
+
+            map.put("msg", "用户修改成功");
+
+        }catch (Exception e){
+            map.put("success",false);
+            e.printStackTrace();
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            result = mapper.writeValueAsString(map);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
     public boolean uploadHeadPic(HttpServletRequest request,MultipartFile file,String savePath,String fileName){
         boolean flag=false;
         try{
@@ -123,8 +178,53 @@ public class SecurityUserController {
             e.printStackTrace();
         }
 
-
         return flag;
     }
+
+    @RequestMapping(value="/delete",method = RequestMethod.POST,produces ="application/json;charset=UTF-8" )
+    @RequiresPermissions("User:delete")
+    public @ResponseBody String deleteUser(@RequestParam("userIds")String[] userIds){
+        Map<String,Object> map = new HashMap<String,Object>();
+        String result = "";
+        ObjectMapper mapper = new ObjectMapper();
+        try{
+            for(String id:userIds){
+                userService.remove(id);
+            }
+            map.put("success",true);
+            map.put("msg","删除用户成功");
+        }catch (Exception e){
+            map.put("success",false);
+            e.printStackTrace();
+        }
+        try {
+            result = mapper.writeValueAsString(map);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/changeAccountStatus",method=RequestMethod.GET)
+    public @ResponseBody  String unlockAccount(@RequestParam("userId")String userId,@RequestParam("status") int status){
+        Map<String,Object> map= new HashMap<String,Object>();
+        String result = "";
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            userService.relockAccount(userId);
+            map.put("success",true);
+            if(status==0){
+                map.put("msg","锁定成功");
+            }else{
+                map.put("msg","解锁成功");
+            }
+            result = mapper.writeValueAsString(map);
+        }catch (Exception e){
+            map.put("success",false);
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 
 }

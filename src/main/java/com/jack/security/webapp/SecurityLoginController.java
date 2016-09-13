@@ -61,9 +61,7 @@ public class SecurityLoginController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		return result;
-
 	}
 
 
