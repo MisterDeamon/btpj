@@ -16,7 +16,7 @@ public interface SecurityUserMapper extends BaseMapper<SecurityUser,Serializable
 	
 	public int findUserCount(@Param("pojo")SecurityUser user,@Param("page")Page<SecurityUser> page);
 	
-	public void changeLoginState(@Param("pojo")SecurityUser user);
+	public void changeLoginState(@Param("state")int state,@Param("id") String id);
 
 	public void lockAccount(@Param("id")String id);
 

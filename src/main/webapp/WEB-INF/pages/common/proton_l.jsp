@@ -19,5 +19,3 @@
     var contextPath = local.pathname.split("/")[1];
     var ctx = local.protocol+"//"+local.host;
 </script>
-
-<!-- end: JavaScript-->

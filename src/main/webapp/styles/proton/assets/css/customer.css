@@ -1,0 +1,21 @@
+.middle{
+    width: 100%;
+    text-align: center;
+}
+.middle button{
+    margin-left:20px;
+}
+.pageMidlle{
+    width: 100%;
+    margin-left:38%;
+}
+
+.panel-body form table{
+    text-align:left;
+}
+.panel-body form table tr td input{
+    width:60%;
+}
+.panel-body form table tr td span{
+    font-size:12px;
+}

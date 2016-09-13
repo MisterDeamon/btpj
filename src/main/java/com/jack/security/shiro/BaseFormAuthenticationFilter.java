@@ -1,8 +1,10 @@
 package com.jack.security.shiro;
 
+import com.jack.security.service.SecurityUserService;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import sun.security.util.SecurityConstants;
 
 import javax.servlet.ServletRequest;
@@ -15,6 +17,9 @@ import java.io.IOException;
  * Created by wajiangk on 8/23/2016.
  */
 public class BaseFormAuthenticationFilter extends FormAuthenticationFilter {
+
+    @Autowired
+    protected SecurityUserService securityUserService;
 
     @Override
     protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
@@ -37,6 +42,8 @@ public class BaseFormAuthenticationFilter extends FormAuthenticationFilter {
             httpServletRequest.getSession().setAttribute("user", user.getUser());
             httpServletResponse.sendRedirect(this.getSuccessUrl());
 
+            securityUserService.changeLoginState(1,user.getUser().getId());
+
         }else{
             httpServletRequest.getSession().setAttribute("error", "login failure");
             httpServletResponse.sendRedirect(this.getLoginUrl());
@@ -44,5 +51,9 @@ public class BaseFormAuthenticationFilter extends FormAuthenticationFilter {
 
         return false;
 
+    }
+
+    public void setSecurityUserService(SecurityUserService securityUserService) {
+        this.securityUserService=securityUserService;
     }
 }

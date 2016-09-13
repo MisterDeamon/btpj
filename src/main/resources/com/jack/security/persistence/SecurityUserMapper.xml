@@ -15,6 +15,7 @@
 			  u.tel_no,
 			  u.qq_no,
 			  u.email,
+			  u.login_state,
 			  r.role_id
 	    FROM  security_user u
 	    LEFT JOIN
@@ -55,12 +56,13 @@
         <result property="userName" column="user_name"/>
         <result property="plainPasswd" column="passwd_plaintext"/>
         <result property="salt" column="passwd_salt"/>
-        <result property="phone" column="phone"/>
+        <result property="phone" column="tel_no"/>
         <result property="idCard" column="id_card"/>
         <result property="email" column="email"/>
         <result property="tencentNo" column="qq_no"/>
         <result property="headPicPath" column="headpic_path"/>
         <result property="userStatus" column="status"/>
+		<result property="loginState" column="login_state"/>
         <collection property="roles" ofType="SecurityRole">
 			<result column="role_id" property="roleId"/>
 			<result column="role_name" property="roleName"/>
@@ -103,4 +105,92 @@
 		</where>
 	</update>
 
+	<update id="changeLoginState">
+		UPDATE SECURITY_USER
+		SET login_state = #{state}
+		<where>
+			id=#{id}
+		</where>
+	</update>
+
+
+	<!--insert security_user-->
+	<insert id="save" parameterType="SecurityUser">
+		<selectKey keyProperty="pojo.id" resultType="String" order="BEFORE">
+			select UUID_SHORT()
+		</selectKey>
+		INSERT INTO security_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			id,
+			<if test="pojo.userName != null">
+				user_name,
+			</if>
+			<if test="pojo.idCard != null">
+				id_card,
+			</if>
+			<if test="pojo.plainPasswd != null">
+				passwd_plaintext,
+			</if>
+			<if test="pojo.salt != null">
+				passwd_salt,
+			</if>
+			<if test="pojo.tencentNo != null">
+				qq_no,
+			</if>
+			<if test="pojo.phone != null">
+				tel_no,
+			</if>
+			<if test="pojo.email != null">
+				email,
+			</if>
+			<if test="pojo.createdDate != null">
+				create_date,
+			</if>
+			<if test="pojo.createdBy != null">
+				create_by,
+			</if>
+			<if test="pojo.userStatus != null">
+				status,
+			</if>
+			<if test="pojo.headPicPath != null">
+				headpic_path
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pojo.id},
+			<if test="pojo.userName != null">
+				#{pojo.userName},
+			</if>
+			<if test="pojo.idCard != null">
+				#{pojo.idCard},
+			</if>
+			<if test="pojo.plainPasswd != null">
+				#{pojo.plainPasswd},
+			</if>
+			<if test="pojo.salt != null">
+				#{pojo.salt},
+			</if>
+			<if test="pojo.tencentNo != null">
+				#{pojo.tencentNo},
+			</if>
+			<if test="pojo.phone != null">
+				#{pojo.phone},
+			</if>
+			<if test="pojo.email != null">
+				#{pojo.email},
+			</if>
+			<if test="pojo.createdDate != null">
+				#{pojo.createdDate},
+			</if>
+			<if test="pojo.createdBy != null">
+				#{pojo.createdBy},
+			</if>
+			<if test="pojo.userStatus != null">
+				#{pojo.userStatus},
+			</if>
+			<if test="pojo.headPicPath != null">
+				#{pojo.headPicPath}
+			</if>
+		</trim>
+	</insert>
 </mapper>

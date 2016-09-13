@@ -2,48 +2,83 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
 <%@ include file="../../../common/proton.jsp" %>
 
-<div class="row">
+<div class="row" id="info">
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h2><i class="fa fa-table red"></i><span class="break"></span><strong>Members</strong></h2>
+                <h2><i class="fa fa-table red"></i><span class="break"></span><strong>用户信息</strong></h2>
+                <div class="panel-actions">
+                    <a href="index.html#" class="btn-setting"><i class="fa fa-rotate-right"></i></a>
+                    <a href="index.html#" class="btn-minimize"><i class="fa fa-chevron-up"></i></a>
+                </div>
             </div>
             <div class="panel-body">
+                <div class="btn-action">
+                    <a class="create btn btn-success "  href="<%=basePath%>/management/security/user/create" title="新增" id="create" data-toggle="modal">
+                        <i class="fa fa-search-plus "></i>
+                    </a>
+                    <a class="btn btn-info" href="table.html#" title="修改">
+                        <i class="fa fa-edit "></i>
+                    </a>
+                    <a class="btn btn-danger" href="table.html#" title="删除">
+                        <i class="fa fa-trash-o "></i>
+                    </a>
+                    <a class="btn btn-warning" href="table.html#" title="分配角色">
+                        <i class="fa fa-users "></i>
+                    </a>
+                </div>
                 <table class="table table-striped table-bordered bootstrap-datatable datatable">
                     <thead>
                     <tr>
-                        <th>Employe</th>
-                        <th>Position</th>
-                        <th>Salary</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th><input type="checkbox" id="checkbox"  name="checkbox" value="0">选择</th>
+                        <th>序号</th>
+                        <th>用户名</th>
+                        <th>密码</th>
+                        <th>salt值</th>
+                        <th>证件号码</th>
+                        <th>手机号码</th>
+                        <th>QQ</th>
+                        <th>邮箱</th>
+                        <th>最后更新时间</th>
+                        <th>账户状态</th>
+                        <th>登录状态</th>
                     </tr>
                     </thead>
                     <tbody>
+                    <c:forEach var="user" items="${userList}" varStatus="index">
                     <tr>
-                        <td>Willson</td>
-                        <td>Developer</td>
-                        <td>2563$</td>
+                        <td><input type="checkbox" name="checkbox" value="${user.id}"></td>
+                        <td>${index.count}</td>
+                        <td>${user.userName}</td>
+                        <td>${user.plainPasswd}</td>
+                        <td>${user.salt}</td>
+                        <td>${user.idCard}</td>
+                        <td>${user.phone}</td>
+                        <td>${user.tencentNo}</td>
+                        <td>${user.email}</td>
+                        <td>${user.updatedDate}</td>
                         <td>
-                            <span class="label label-warning">Pending</span>
+                            <c:if test="${user.userStatus==1}">
+                                <span class="label label-success">正常</span>
+                            </c:if>
+                            <c:if test="${user.userStatus==0}">
+                                <span class="label label-danger">锁定</span>
+                            </c:if>
                         </td>
                         <td>
-                            <a class="btn btn-success" href="table.html#">
-                                <i class="fa fa-search-plus "></i>
-                            </a>
-                            <a class="btn btn-info" href="table.html#">
-                                <i class="fa fa-edit "></i>
-                            </a>
-                            <a class="btn btn-danger" href="table.html#">
-                                <i class="fa fa-trash-o "></i>
+                            <c:if test="${user.loginState==1}">
+                                <span class="label label-success">在线</span>
+                            </c:if>
+                            <c:if test="${user.loginState==0}">
+                                <span class="label label-default">离线</span>
+                            </c:if>
+                        </td>
 
-                            </a>
-                        </td>
                     </tr>
-
+                    </c:forEach>
                     </tbody>
                 </table>
-                <ul class="pagination">
+                <ul class="pagination pageMidlle">
                     <li><a href="table.html#">Prev</a></li>
                     <li class="active">
                         <a href="table.html#">1</a>

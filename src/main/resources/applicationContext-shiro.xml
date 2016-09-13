@@ -63,7 +63,9 @@
     <!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
     <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
 
-    <bean id="baseFormAuthenticationFilter" class="com.jack.security.shiro.BaseFormAuthenticationFilter"/>
+    <bean id="baseFormAuthenticationFilter" class="com.jack.security.shiro.BaseFormAuthenticationFilter">
+        <property name="securityUserService" ref="securityUserService"/>
+    </bean>
 
 
 </beans>
