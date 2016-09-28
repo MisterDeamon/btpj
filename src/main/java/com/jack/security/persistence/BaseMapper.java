@@ -25,7 +25,7 @@ public abstract interface BaseMapper<T,PK extends Serializable> {
 	
 	public void delete(@Param("id")PK id);
 	
-	public T update(@Param("pojo")T obj);
+	public int update(@Param("pojo")T obj);
 	
 	public int save(@Param("pojo")T obj);
 	

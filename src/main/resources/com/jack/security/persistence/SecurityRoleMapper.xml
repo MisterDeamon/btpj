@@ -19,9 +19,30 @@
 	    	  security_right rt on rt.id = rtr.right_id
 	</sql>
 
+	<sql id="findAll_sql">
+		SELECT
+		r.id AS roleId,
+		r.role_name
+		FROM  security_role r
+	</sql>
+
+
+	<resultMap type="SecurityRole" id="resultRoleAll">
+		<id property="roleId" column="id"/>
+		<result property="roleName" column="role_name"/>
+		<result property="updatedDate" column="update_date"/>
+		<result property="updatedBy" column="update_by"/>
+		<result property="createdDate" column="create_date"/>
+		<result property="createdBy" column="create_by"/>
+	</resultMap>
+
 	<resultMap type="SecurityRole" id="resultRole_Rights">
-        <id property="id" column="id"/>
+        <id property="roleId" column="id"/>
         <result property="roleName" column="role_name"/>
+		<result property="updatedDate" column="update_date"/>
+		<result property="updatedBy" column="update_by"/>
+		<result property="createdDate" column="create_date"/>
+		<result property="createdBy" column="create_by"/>
         <collection property="rights" ofType="SecurityPermission">
 			<result column="right_id" property="rightId"/>
 			<result column="right_name" property="rightName"/>
@@ -39,5 +60,57 @@
 		</where>
 	</select>
 
+	<sql id="findRolePage_sql">
+		SELECT
+		DISTINCT
+		r.id,
+		r.role_name,
+		r.update_by,
+		r.update_date,
+		r.create_by,
+		r.create_date
+		FROM  security_role r
+		LEFT JOIN
+		security_role_right_rel t on r.id = t.role_id
+		LEFT JOIN
+		security_right rt on rt.id = t.right_id
+		<where>
+			<trim suffixOverrides="AND">
+				r.is_deleted = 0 and
+				<if test="pojo.roleName != null and pojo.roleName != ''">
+					r.role_name like CONCAT(CONCAT('%', #{pojo.roleName}),'%') and
+				</if>
+				<if test="pojo.rights != null">
+					<trim suffixOverrides="AND">
+						rt.right_name IN
+						<foreach collection="pojo.rights" open="(" separator="," close=")" item="permission">
+							#{permission.rightName}
+						</foreach>
+					</trim>
+				</if>
+			</trim>
+		</where>
+	</sql>
+	<select id="findRolePage" resultMap="resultRole_Rights">
+		<include refid="Pager.paginationStart"/>
+		<include refid="findRolePage_sql"/>
+		<include refid="Pager.paginationEnd"/>
+	</select>
+
+	<select id="findRoleCount" resultType="int">
+		<include refid="Pager.countStart"/>
+		<include refid="findRolePage_sql"/>
+		<include refid="Pager.countEnd"/>
+	</select>
+	<select id="findAll" resultMap="resultRoleAll">
+		<include refid="findAll_sql" />
+		<where>
+			 r.is_deleted = 0
+		</where>
+	</select>
+
+	<select id="findByUserId" parameterType="string">
+
+	</select>
 
 </mapper>

@@ -30,9 +30,6 @@
 
     <script src="<%=protonPath%>/assets/js/jquery-2.1.1.min.js"></script>
 
-
-
-
     <script src="<%=protonPath%>/assets/js/jquery-migrate-1.2.1.min.js"></script>
     <script src="<%=protonPath%>/assets/js/bootstrap.min.js"></script>
     <script src="<%=protonPath%>/assets/js/customer.js"></script>
@@ -268,6 +265,10 @@
                 </div>
             </div>
         </div>
+
+
+
+
     </div><!--/container-->
 
 

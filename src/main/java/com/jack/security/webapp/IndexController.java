@@ -42,7 +42,7 @@ public class IndexController {
     @Autowired
     private SecurityUserRoleService securityUserRoleService;
 
-    @RequestMapping(value="/index",method = RequestMethod.GET)
+    @RequestMapping(value="/index",method = {RequestMethod.GET,RequestMethod.POST})
     public String index(HttpServletRequest request,Model model){
         Subject subject = SecurityUtils.getSubject();
 
@@ -51,7 +51,7 @@ public class IndexController {
 
         SecurityUser user = shiroUser.getUser();
         List<SecurityRole> userRoles = new ArrayList<SecurityRole>();
-        for(SecurityRole role:user.getRoles()){
+        for(SecurityRole role:user.getSroles()){
             userRoles.add(securityUserRoleService.findById(role.getRoleId()));
         }
         Set<String> permissionList=new HashSet<String>();

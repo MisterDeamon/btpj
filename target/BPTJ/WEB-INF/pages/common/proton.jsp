@@ -10,6 +10,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://shiro.apache.org/tags" prefix="shiro"%>
+<%@ taglib uri="/WEB-INF/fnc.tld" prefix="fnc"%>
 <%
     String basePath = request.getContextPath();
     String protonPath = basePath+"/styles/proton";

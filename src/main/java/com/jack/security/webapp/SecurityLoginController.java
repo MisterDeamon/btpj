@@ -38,12 +38,14 @@ public class SecurityLoginController {
 	}
 
 	@RequestMapping(value = "/checkName",method=RequestMethod.GET,produces ="application/json;charset=UTF-8" )
-	public @ResponseBody String checkName(@RequestParam String userName) throws UnsupportedEncodingException {
+	public @ResponseBody String checkName(@RequestParam String userName,@RequestParam("userId")String userId) throws UnsupportedEncodingException {
 
 		String encode = StringUtils.getEncoding(userName);
 
 		userName = new String(userName.getBytes(encode),"UTF-8");
 		SecurityUser securityUser = userService.findByName(userName);
+		SecurityUser user = userService.findById(userId);
+
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(null==securityUser) {
 			map.put("success",false);
@@ -52,6 +54,11 @@ public class SecurityLoginController {
 		}else{
 			map.put("success",true);
 			map.put("headpicPath", securityUser.getHeadPicPath());
+		}
+		if(user!=null){
+			if(user.getUserName().equals(userName)){
+				map.put("success",false);
+			}
 		}
 		ObjectMapper mapper = new ObjectMapper();
 		String result = "";

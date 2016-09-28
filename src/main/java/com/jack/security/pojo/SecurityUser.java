@@ -24,7 +24,7 @@ public class SecurityUser extends BaseEntity implements Serializable{
 	private String headPicPath;
 	private Integer userStatus;
 	
-	private List<SecurityRole> roles;
+	private List<SecurityRole> sroles;
 
 	public SecurityUser() {
 		super();
@@ -110,12 +110,12 @@ public class SecurityUser extends BaseEntity implements Serializable{
 		this.loginState = loginState;
 	}
 
-	public List<SecurityRole> getRoles() {
-		return roles;
+	public List<SecurityRole> getSroles() {
+		return sroles;
 	}
 
-	public void setRoles(List<SecurityRole> roles) {
-		this.roles = roles;
+	public void setSroles(List<SecurityRole> sroles) {
+		this.sroles = sroles;
 	}
 
 	public String getHeadPicPath() {
@@ -132,15 +132,6 @@ public class SecurityUser extends BaseEntity implements Serializable{
 
 	public void setUserStatus(Integer userStatus) {
 		this.userStatus = userStatus;
-	}
-
-	@Override
-	public String toString() {
-		return "SecurityUser [userName=" + userName + ", plainPasswd="
-				+ plainPasswd + ", salt=" + salt + ", phone=" + phone
-				+ ", idCard=" + idCard + ", email=" + email + ", tencentNo="
-				+ tencentNo + ", id=" + id + ", isDeleted=" + isDeleted
-				+ ", loginState=" + loginState + ", roles=" + roles + "]";
 	}
 
 }

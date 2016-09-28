@@ -106,7 +106,7 @@ public class ShiroDbRealm extends AuthorizingRealm {
         List<SecurityRole> userRoles =new ArrayList<SecurityRole>();
 
         SecurityUser user = shiroUser.getUser();
-        for(SecurityRole role:user.getRoles()){
+        for(SecurityRole role:user.getSroles()){
             userRoles.add(securityUserRoleService.findById(role.getRoleId()));
         }
 

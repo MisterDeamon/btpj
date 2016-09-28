@@ -1,69 +1,126 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
         
 <mapper namespace="com.jack.security.persistence.SecurityUserMapper">
 	<sql id="findUserByName_sql">
 		SELECT
-			  u.id,
-			  u.user_name,
-			  u.passwd_plaintext,
-			  u.passwd_salt,
-			  u.headpic_path,
-			  u.status,
-			  u.id_card,
-			  u.tel_no,
-			  u.qq_no,
-			  u.email,
-			  u.login_state,
-			  r.role_id
-	    FROM  security_user u
-	    LEFT JOIN
-	    	  security_user_role_rel r on u.id=r.user_id
-	    LEFT JOIN
-	    	  security_role sr on sr.id = r.role_id
+		u.id,
+		u.user_name,
+		u.passwd_plaintext,
+		u.passwd_salt,
+		u.headpic_path,
+		u.status,
+		u.id_card,
+		u.tel_no,
+		u.qq_no,
+		u.email,
+		u.login_state,
+		u.update_date,
+		u.update_by,
+		r.role_id,
+		sr.role_name
+		FROM  security_user u
+		LEFT JOIN
+		security_user_role_rel r on u.id=r.user_id
+		LEFT JOIN
+		security_role sr on sr.id = r.role_id
 	</sql>
+
 	<sql id="findUserAllFields_sql">
-		SELECT 
-			  u.id,
-			  u.user_name,
-			  u.passwd_plaintext,
-			  u.passwd_salt,
-			  u.id_card,
-			  u.tel_no,
-			  u.qq_no,
-			  u.email,
-			  u.headpic_path,
-			  u.status,
-			  r.role_id,
-			  sr.role_name,
-			  ri.right_id,
-			  st.right_name,
-			  st.right_url,
-			  st.right_icon
-	    FROM  security_user u 
-	    LEFT JOIN
-	    	  security_user_role_rel r on u.id=r.user_id
-	    LEFT JOIN 
-	    	  security_role sr on sr.id = r.role_id
-	    LEFT JOIN
-	    	  security_role_right_rel ri on sr.id=ri.role_id
-	    LEFT JOIN
-	    	  security_right st on st.id = ri.right_id
+		SELECT
+		u.id,
+		u.user_name,
+		u.passwd_plaintext,
+		u.passwd_salt,
+		u.id_card,
+		u.tel_no,
+		u.qq_no,
+		u.email,
+		u.headpic_path,
+		u.status,
+		u.update_date,
+		u.update_by,
+		u.login_state,
+		r.role_id,
+		sr.role_name,
+		ri.right_id,
+		st.right_name,
+		st.right_url,
+		st.right_icon
+		FROM  security_user u
+		LEFT JOIN
+		security_user_role_rel r on u.id=r.user_id
+		LEFT JOIN
+		security_role sr on sr.id = r.role_id
+		LEFT JOIN
+		security_role_right_rel ri on sr.id=ri.role_id
+		LEFT JOIN
+		security_right st on st.id = ri.right_id
+	</sql>
+	<sql id="findUserPage_sql">
+		SELECT
+		DISTINCT
+		u.id,
+		u.user_name,
+		u.passwd_plaintext,
+		u.passwd_salt,
+		u.id_card,
+		u.tel_no,
+		u.qq_no,
+		u.email,
+		u.headpic_path,
+		u.status,
+		u.login_state,
+		u.update_date,
+		u.update_by
+		FROM  security_user u
+		LEFT JOIN
+		security_user_role_rel r on u.id=r.user_id
+		LEFT JOIN
+		security_role sr on sr.id = r.role_id
+		<where>
+			<trim suffixOverrides="AND">
+				u.is_deleted = 0 and
+				<if test="pojo.userName != null and pojo.userName != ''">
+					u.user_name like CONCAT(CONCAT('%', #{pojo.userName}),'%') and
+				</if>
+
+				<if test="pojo.idCard != null and pojo.idCard != ''">
+					u.id_card like CONCAT(CONCAT('%', #{pojo.idCard}),'%') and
+				</if>
+				<if test="pojo.phone != null and pojo.phone != ''">
+					u.tel_no like CONCAT(CONCAT('%', #{pojo.phone}),'%') and
+				</if>
+				<if test="pojo.sroles != null">
+					<trim suffixOverrides="AND">
+						sr.role_name IN
+						<foreach collection="pojo.roles" open="(" separator="," close=")" item="role">
+							<if test="role != null and role.roleName != ''">
+								#{role.roleName}
+							</if>
+
+						</foreach>
+					</trim>
+				</if>
+			</trim>
+		</where>
 	</sql>
 	<resultMap type="SecurityUser" id="resultUser_Role_Rights">
-        <id property="id" column="id"/>
-        <result property="userName" column="user_name"/>
-        <result property="plainPasswd" column="passwd_plaintext"/>
-        <result property="salt" column="passwd_salt"/>
-        <result property="phone" column="tel_no"/>
-        <result property="idCard" column="id_card"/>
-        <result property="email" column="email"/>
-        <result property="tencentNo" column="qq_no"/>
-        <result property="headPicPath" column="headpic_path"/>
-        <result property="userStatus" column="status"/>
+		<id property="id" column="id"/>
+		<result property="userName" column="user_name"/>
+		<result property="plainPasswd" column="passwd_plaintext"/>
+		<result property="salt" column="passwd_salt"/>
+		<result property="phone" column="tel_no"/>
+		<result property="idCard" column="id_card"/>
+		<result property="email" column="email"/>
+		<result property="tencentNo" column="qq_no"/>
+		<result property="headPicPath" column="headpic_path"/>
+		<result property="userStatus" column="status"/>
 		<result property="loginState" column="login_state"/>
-        <collection property="roles" ofType="SecurityRole">
+		<result property="updatedDate" column="update_date"/>
+		<result property="updatedBy" column="update_by"/>
+		<collection property="sroles" ofType="SecurityRole">
 			<result column="role_id" property="roleId"/>
 			<result column="role_name" property="roleName"/>
 			<collection property="rights" ofType="SecurityPermission">
@@ -74,8 +131,11 @@
 				<result column="right_sign" property="rightSign"/>
 			</collection>
 		</collection>
-    </resultMap>
-
+	</resultMap>
+	<insert id="setUserRoles" parameterType="string">
+		INSERT INTO security_user_role_rel(user_id,role_id)
+		values(#{userId},#{roleId})
+	</insert>
 	<select id="findByNanme" parameterType="string" resultMap="resultUser_Role_Rights">
 		<include refid="findUserByName_sql" />
 		<where>
@@ -83,18 +143,27 @@
 			AND u.is_deleted = 0
 		</where>
 	</select>
-	<select id="findAll" parameterType="string" resultMap="resultUser_Role_Rights">
+	<select id="findById" parameterType="string" resultMap="resultUser_Role_Rights">
+		<include refid="findUserByName_sql" />
+		<where>
+			u.id = #{id}
+			AND u.is_deleted = 0
+		</where>
+	</select>
+
+
+	<select id="findAll"  resultMap="resultUser_Role_Rights">
 		<include refid="findUserByName_sql" />
 		<where>
 			u.is_deleted = 0
 		</where>
 	</select>
 	<update id="lockAccount" parameterType="string">
-		  UPDATE SECURITY_USER
-				 SET STATUS = 0
-		  <where>
-			     id=#{id}
-		  </where>
+		UPDATE SECURITY_USER
+		SET STATUS = 0
+		<where>
+			id=#{id}
+		</where>
 	</update>
 
 	<update id="relockAccount" parameterType="string">
@@ -112,7 +181,47 @@
 			id=#{id}
 		</where>
 	</update>
-
+	<update id="update">
+		UPDATE SECURITY_USER
+		<set>
+			<if test="pojo.userName != null">
+				user_name=#{pojo.userName},
+			</if>
+			<if test="pojo.idCard != null">
+				id_card=#{pojo.idCard},
+			</if>
+			<if test="pojo.plainPasswd != null">
+				passwd_plaintext=#{pojo.plainPasswd},
+			</if>
+			<if test="pojo.salt != null">
+				passwd_salt=#{pojo.salt},
+			</if>
+			<if test="pojo.phone != null">
+				tel_no=#{pojo.phone},
+			</if>
+			<if test="pojo.email != null and pojo.email!=''">
+				email=#{pojo.email},
+			</if>
+			<if test="pojo.tencentNo != null">
+				qq_no=#{pojo.tencentNo},
+			</if>
+			<if test="pojo.userStatus != null">
+				status=#{pojo.userStatus},
+			</if>
+			<if test="pojo.headPicPath != null">
+				headpic_path=#{pojo.headPicPath},
+			</if>
+			<if test="pojo.updatedDate != null">
+				update_date=#{pojo.updatedDate},
+			</if>
+			<if test="pojo.updatedBy != null">
+				update_by=#{pojo.updatedBy}
+			</if>
+		</set>
+		<where>
+			id=#{pojo.id}
+		</where>
+	</update>
 
 	<!--insert security_user-->
 	<insert id="save" parameterType="SecurityUser">
@@ -153,7 +262,13 @@
 				status,
 			</if>
 			<if test="pojo.headPicPath != null">
-				headpic_path
+				headpic_path,
+			</if>
+			<if test="pojo.updatedDate != null">
+				update_date,
+			</if>
+			<if test="pojo.updatedBy != null">
+				update_by,
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -189,7 +304,13 @@
 				#{pojo.userStatus},
 			</if>
 			<if test="pojo.headPicPath != null">
-				#{pojo.headPicPath}
+				#{pojo.headPicPath},
+			</if>
+			<if test="pojo.updatedDate != null">
+				#{pojo.updatedDate},
+			</if>
+			<if test="pojo.updatedBy != null">
+				#{pojo.updatedBy}
 			</if>
 		</trim>
 	</insert>
@@ -207,5 +328,22 @@
 			</trim>
 		</where>
 	</delete>
+	<select id="findUserPage" resultMap="resultUser_Role_Rights">
+		<include refid="Pager.paginationStart"/>
+		<include refid="findUserPage_sql"/>
+		<include refid="Pager.paginationEnd"/>
+	</select>
+
+	<select id="findUserCount" resultType="int">
+		<include refid="Pager.countStart"/>
+		<include refid="findUserPage_sql"/>
+		<include refid="Pager.countEnd"/>
+	</select>
+
+	<delete id="cancleRole" parameterType="string">
+		delete from security_user_role_rel where user_id = #{userId}
+		and role_id = #{roleId}
+	</delete>
+
 
 </mapper>

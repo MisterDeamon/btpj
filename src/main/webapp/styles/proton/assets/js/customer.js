@@ -4,7 +4,6 @@
 
 $(document).ready(function(e){
 
-
     $(".sidebar-menu a").live("click",function(event){
         var  str="";
         var ctg = $(this).children().text();
@@ -58,6 +57,7 @@ $(document).ready(function(e){
     //validate userName
     $("body").on("blur",":input[name='userName']",function(){
         var userName = $(this).val();
+        var userId = $(this).parent().find("input[name='id']").val();
         var info={"type":true,"msg":"✔"};
         var node = $(this);
         if(userName==""||userName=='undefined'){
@@ -66,7 +66,7 @@ $(document).ready(function(e){
         }else{
             $.ajax({
                 type:'get',
-                url:ctx+'/checkName?userName='+userName,
+                url:ctx+'/checkName?userName='+userName+"&userId="+userId,
                 dataType: 'json',
                 scriptCharset: 'utf-8',
                 success:function(data){
@@ -210,18 +210,7 @@ $(document).ready(function(e){
                 success:function(r){
                     console.log(r);
                     if(r.success){
-                        form.parent().find(".alert").removeClass("alert-danger").addClass("alert-success").find("strong").html(r.msg);
-                        form.parent().find(".alert").show("slow");
-                        setTimeout(function(){
-                            form.parent().find(".alert").hide("slow");
-                        },3000);
-                        setTimeout(function(){
-                            $(".sidebar-menu a").each(function(){
-                                if($(this).parent().hasClass("active")){
-                                    $(this).click();
-                                }
-                            });
-                        },2000);
+                        showEditInfo(form,r);
 
                     }else{
                         form.parent().find(".alert").find("strong").html("系统内部错误，保存用户失败");
@@ -247,3 +236,18 @@ $(document).ready(function(e){
     $("body").on("click",":button[type='remove']",function(e){});
 
 });
+
+function showEditInfo(node,r){
+    node.parent().find(".alert").removeClass("alert-danger").addClass("alert-success").find("strong").html(r.msg);
+    node.parent().find(".alert").show("slow");
+    setTimeout(function(){
+        form.parent().find(".alert").hide("slow");
+    },2000);
+    setTimeout(function(){
+        $(".sidebar-menu a").each(function(){
+            if($(this).parent().hasClass("active")){
+                $(this).click();
+            }
+        });
+    },3000);
+}

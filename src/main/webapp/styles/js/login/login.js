@@ -40,7 +40,7 @@ function checkName(){
 
     $("input[name='userName']").bind('blur',function(){
         var userName = $(this).val();
-        var url=ctx + '/checkName?userName='+userName;
+        var url=ctx + '/checkName?userName='+userName+"&userId=''";
         if(userName!=null&&userName!=''){
             $.ajax({
                 url: url,

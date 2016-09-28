@@ -1,8 +1,12 @@
 package com.jack.security.webapp;
 
+import com.jack.security.pojo.SecurityRole;
 import com.jack.security.pojo.SecurityUser;
+import com.jack.security.service.SecurityUserRoleService;
 import com.jack.security.service.SecurityUserService;
 import com.jack.security.shiro.ShiroDbRealm;
+import com.jack.utils.PageUtils;
+import com.jack.utils.Pager;
 import com.jack.utils.StringUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.shiro.SecurityUtils;
@@ -10,67 +14,101 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by wajiangk on 9/6/2016.
  */
 @Controller
 @RequestMapping(value = "/management/security/user")
-public class SecurityUserController {
+public class SecurityUserController extends BaseController{
 
     @Autowired
     private SecurityUserService userService;
+    @Autowired
+    private SecurityUserRoleService userRoleService;
 
     private static final String LIST = "management/security/user/list";
     private static final String CREATE = "management/security/user/create";
     private static final String MODIFY = "management/security/user/modify";
+    private static final String ROLESET = "management/security/user/roleSet";
 
 
-    @RequestMapping(value={"/list",""},method= RequestMethod.GET)
+    @RequestMapping(value={"/list",""},method= {RequestMethod.GET,RequestMethod.POST})
     @RequiresPermissions("User:view")
-    public String LIST(Model model){
+    public String LIST(Model model,SecurityUser user,SecurityRole searchRole,HttpServletRequest request){
 
-        List<SecurityUser> userList = userService.findAll();
+        Pager<SecurityUser> pager = new Pager<SecurityUser>();
+        pager.setPageSize(5);
+        if (request != null) {
+            String pageNum = request.getParameter("pageNum");
+            if (org.apache.commons.lang3.StringUtils.isNotBlank(pageNum)) {
+                pager.setPageNumber(new Integer(pageNum));
+            }
+            String numPerPage = request.getParameter("numPerPage");
+            if (StringUtils.isNotEmpty(numPerPage)) {
+                pager.setPageSize(new Integer(numPerPage));
+            }
+        }
 
-        model.addAttribute("userList",userList);
+        List<SecurityRole> searchRoles=null;
+        if(null!=searchRole.getRoleName()&&!"".equals(searchRole.getRoleName())){
+            searchRoles = new ArrayList<SecurityRole>();
+            searchRoles.add(searchRole);
+        }
+
+        user.setSroles(searchRoles);
+        List<SecurityUser> userList = userService.findUserPage(user,pager);
+        int total = userService.findUserCount(user,pager);
+        //select user roles
+        for(int i=0;i<userList.size();i++){
+            userList.get(i).setSroles(userService.findById(userList.get(i).getId()).getSroles());
+        }
+        pager.setTotalCount(total);
+        pager.setResult(userList);
+        pager.setTotalCount(total);
+        pager.setFirstandLastPn();
+        model.addAttribute("page", pager);
+        model.addAttribute("userList", pager.getResult());
+        model.addAttribute("searchUser", user);
+        model.addAttribute("searchRole", searchRole);
         return LIST;
     }
 
-
+    /**
+     * create User
+     * @return
+     */
     @RequestMapping(value="/create",method = RequestMethod.GET)
     @RequiresPermissions("User:create")
     public  String create(){
         return CREATE;
     }
 
+    /**
+     * save create user form
+     * @param request
+     * @param user
+     * @param file
+     * @return
+     */
     @RequestMapping(value="/create",method = RequestMethod.POST,produces ="application/json;charset=UTF-8" )
     @RequiresPermissions("User:create")
     public @ResponseBody
-    String create(Model model, HttpServletRequest request, SecurityUser user, @RequestParam("file")MultipartFile file){
+    String create(HttpServletRequest request, SecurityUser user, @RequestParam("file")MultipartFile file){
 
         Map<String,Object> map = new HashMap<String,Object>();
 
-
         Subject subject = SecurityUtils.getSubject();
-
-        ShiroDbRealm.ShiroUser shiroUser = (ShiroDbRealm.ShiroUser) subject
-                .getPrincipal();
+        ShiroDbRealm.ShiroUser shiroUser = (ShiroDbRealm.ShiroUser) subject.getPrincipal();
         String result = "";
         try {
             user.setPlainPasswd(request.getParameter("password"));
@@ -78,27 +116,18 @@ public class SecurityUserController {
             user.setCreatedBy(shiroUser.getUser().getUserName());
             user.setUpdatedDate(new Date());
             user.setUpdatedBy(shiroUser.getUser().getUserName());
-
-            if (file != null) {
-                String orignFileName = file.getOriginalFilename();
-                String fileName = StringUtils.getFormatDate_2() + "." + orignFileName.substring(orignFileName.lastIndexOf(".") + 1);
-
-                boolean headpicEnd = uploadHeadPic(request, file, "/file/upload/headpic", fileName);
-
-                if (headpicEnd) {
-                    user.setHeadPicPath(fileName);
-                }
+            String fileName = uploadHeadPic(request, file, "/file/upload/headpic");
+            if (!fileName.equals("")) {
+                user.setHeadPicPath(fileName);
             }
-            userService.save(user);
+
+            userService.saveOrUpdate(user);
             map.put("success", true);
-
             map.put("msg", "用户创建成功");
-
         }catch (Exception e){
             map.put("success",false);
             e.printStackTrace();
         }
-
         ObjectMapper mapper = new ObjectMapper();
         try {
             result = mapper.writeValueAsString(map);
@@ -109,43 +138,51 @@ public class SecurityUserController {
         return result;
     }
 
-
+    /**
+     * modify user
+     * @param userId
+     * @param model
+     * @return
+     */
     @RequestMapping(value="/modify",method = RequestMethod.GET)
     @RequiresPermissions("User:modify")
-    public  String modify(){
+    public  String modify(@RequestParam("userId") String userId,Model model) {
+        model.addAttribute("user",userService.findById(userId));
         return MODIFY;
     }
 
+    /**
+     * save modify user form
+     * @param request
+     * @param user
+     * @param file
+     * @return
+     */
     @RequestMapping(value="/modify",method = RequestMethod.POST,produces ="application/json;charset=UTF-8" )
     @RequiresPermissions("User:modify")
     public @ResponseBody
-    String modify(Model model, HttpServletRequest request, SecurityUser user, @RequestParam("file")MultipartFile file){
+    String modify(HttpServletRequest request, SecurityUser user, @RequestParam("file")MultipartFile file){
+
 
         Map<String,Object> map = new HashMap<String,Object>();
+        System.out.println(file.getSize());
+        System.out.println(file.isEmpty());
+        String result = "";
 
         Subject subject = SecurityUtils.getSubject();
-
-        ShiroDbRealm.ShiroUser shiroUser = (ShiroDbRealm.ShiroUser) subject
-                .getPrincipal();
-        String result = "";
+        ShiroDbRealm.ShiroUser shiroUser = (ShiroDbRealm.ShiroUser) subject.getPrincipal();
         try {
             user.setPlainPasswd(request.getParameter("password"));
             user.setUpdatedDate(new Date());
             user.setUpdatedBy(shiroUser.getUser().getUserName());
 
-            if (file != null) {
-                String orignFileName = file.getOriginalFilename();
-                String fileName = StringUtils.getFormatDate_2() + "." + orignFileName.substring(orignFileName.lastIndexOf(".") + 1);
-
-                boolean headpicEnd = uploadHeadPic(request, file, "/file/upload/headpic", fileName);
-
-                if (headpicEnd) {
-                    user.setHeadPicPath(fileName);
-                }
+            String fileName = uploadHeadPic(request, file, "/file/upload/headpic");
+            if (!fileName.equals("")) {
+                user.setHeadPicPath(fileName);
             }
-            userService.save(user);
-            map.put("success", true);
 
+            userService.saveOrUpdate(user);
+            map.put("success", true);
             map.put("msg", "用户修改成功");
 
         }catch (Exception e){
@@ -163,30 +200,36 @@ public class SecurityUserController {
         return result;
     }
 
-    public boolean uploadHeadPic(HttpServletRequest request,MultipartFile file,String savePath,String fileName){
-        boolean flag=false;
+    public String uploadHeadPic(HttpServletRequest request,MultipartFile file,String savePath){
+        String fileName = "";
         try{
-            if(file!=null){
+            if(file!=null&&!file.isEmpty()){
 
                 ServletContext sc = request.getSession().getServletContext();
                 String dir = sc.getRealPath(savePath); // 设定文件保存的目录
+                String orignFileName = file.getOriginalFilename();
+                fileName = StringUtils.getFormatDate_2() + "." + orignFileName.substring(orignFileName.lastIndexOf(".") + 1);
 
                 FileUtils.writeByteArrayToFile(new File(dir,fileName),file.getBytes());
-                flag=true;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return flag;
+        return fileName;
     }
 
+    /**
+     * delete user
+     * @param userIds
+     * @return
+     */
     @RequestMapping(value="/delete",method = RequestMethod.POST,produces ="application/json;charset=UTF-8" )
     @RequiresPermissions("User:delete")
     public @ResponseBody String deleteUser(@RequestParam("userIds")String[] userIds){
         Map<String,Object> map = new HashMap<String,Object>();
         String result = "";
         ObjectMapper mapper = new ObjectMapper();
+
         try{
             for(String id:userIds){
                 userService.remove(id);
@@ -205,17 +248,26 @@ public class SecurityUserController {
         return result;
     }
 
-    @RequestMapping(value = "/changeAccountStatus",method=RequestMethod.GET)
+    /**
+     * change user account status
+     * @param userId
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = "/changeAccountStatus",method=RequestMethod.GET,produces ="application/json;charset=UTF-8" )
     public @ResponseBody  String unlockAccount(@RequestParam("userId")String userId,@RequestParam("status") int status){
         Map<String,Object> map= new HashMap<String,Object>();
         String result = "";
         ObjectMapper mapper = new ObjectMapper();
+
         try {
-            userService.relockAccount(userId);
+
             map.put("success",true);
             if(status==0){
+                userService.lockAccount(userId);
                 map.put("msg","锁定成功");
             }else{
+                userService.relockAccount(userId);
                 map.put("msg","解锁成功");
             }
             result = mapper.writeValueAsString(map);
@@ -223,6 +275,60 @@ public class SecurityUserController {
             map.put("success",false);
             e.printStackTrace();
         }
+        return result;
+    }
+
+    /**
+     * roleSet
+     * @param userId
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/roleSet",method=RequestMethod.GET,produces ="application/json;charset=UTF-8" )
+    public String roleSet(@RequestParam("userId")String userId,Model model){
+
+        SecurityUser tempUser = userService.findById(userId);
+        List<SecurityRole> roles = userRoleService.findAll();
+
+        model.addAttribute("userRoleSet",tempUser);
+        model.addAttribute("allRoles",roles);
+
+        return ROLESET;
+    }
+
+
+    /**
+     * roleSet
+     * @param
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/roleSet",method=RequestMethod.POST,produces ="application/json;charset=UTF-8" )
+    public @ResponseBody String roleSet(HttpServletRequest request,@RequestParam("userId") String userId){
+        String[] roleIds = request.getParameterValues("roleId");
+        String result = "";
+        Map<String,Object> map = new HashMap<String, Object>();
+        ObjectMapper mapper = new ObjectMapper();
+        try{
+            SecurityUser temp = userService.findById(userId);
+
+            List<SecurityRole> roles = temp.getSroles();
+            userService.setRole(userId,roleIds,roles);
+
+            map.put("msg","角色分配成功！");
+            map.put("success",true);
+
+        }catch (Exception e){
+            map.put("msg","角色分配失败！");
+            e.printStackTrace();
+        }
+
+        try {
+            result = mapper.writeValueAsString(map);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return result;
     }
 
