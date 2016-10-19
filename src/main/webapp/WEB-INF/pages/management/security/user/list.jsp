@@ -27,9 +27,11 @@
                         <i class="fa fa-trash-o "></i>
                     </a>
                     </shiro:hasPermission>
+                    <shiro:hasPermission name="User:modify">
                     <a class="btn btn-warning" href="<%=basePath%>/management/security/user/roleSet" title="分配角色" id="roleSet">
                         <i class="fa fa-users "></i>
                     </a>
+                    </shiro:hasPermission>
                     <form class="navbar-form navbar-right" style="margin-top:0px;" method="post" id="search" action="<%=basePath%>/management/security/user/list">
                         <a class="btn btn-default" href="javascript:void(0);" title="search" id="submitSf">
                             <i class="fa fa-search "></i>
@@ -47,7 +49,7 @@
                         <th>序号</th>
                         <th>用户名</th>
                         <th>角色</th>
-                        <th>salt值</th>
+                        <th>头像</th>
                         <th>证件号码</th>
                         <th>手机号码</th>
                         <th>QQ</th>
@@ -68,7 +70,9 @@
                                 ${role.roleName}&nbsp;
                             </c:forEach>
                         </td>
-                        <td>${fnc:ellipsisStr(user.plainPasswd)}</td>
+                        <td>
+                           <img class="list-headpic" src="<%=basePath%>/file/upload/headpic/${user.headPicPath}" /></a>
+                        </td>
                         <td>${user.idCard}</td>
                         <td>${user.phone}</td>
                         <td>${user.tencentNo}</td>

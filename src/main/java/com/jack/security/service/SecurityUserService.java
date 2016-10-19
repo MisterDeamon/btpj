@@ -6,7 +6,7 @@ import java.util.List;
 import com.jack.security.pojo.SecurityRole;
 import com.jack.security.shiro.ShiroDbRealm;
 import com.jack.utils.Pager;
-import org.apache.commons.lang3.StringUtils;
+import com.jack.utils.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,25 +89,11 @@ public class SecurityUserService extends AbstractService<SecurityUser,String,Sec
 			}
 		}
 		for(SecurityRole role : roles){
-			if(!contains(role.getRoleId(),roleIds)){
+			if(!StringUtils.contains(role.getRoleId(),roleIds)){
 				this.getMapper().cancleRole(userId,role.getRoleId());
 			}
 		}
 	}
 
-	private boolean contains(String str, String[] strs){
-		for(int i=0;i<strs.length;i++){
-			if(str.equals(strs[i])){
-				return true;
-			}else{
-				if(i!=strs.length-1){
-					continue;
-				}else{
-					return false;
-				}
-			}
-		}
-		return false;
-	}
 
 }

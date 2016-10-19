@@ -95,7 +95,7 @@
 				<if test="pojo.sroles != null">
 					<trim suffixOverrides="AND">
 						sr.role_name IN
-						<foreach collection="pojo.roles" open="(" separator="," close=")" item="role">
+						<foreach collection="pojo.sroles" open="(" separator="," close=")" item="role">
 							<if test="role != null and role.roleName != ''">
 								#{role.roleName}
 							</if>
@@ -105,6 +105,7 @@
 				</if>
 			</trim>
 		</where>
+		order by u.id ASC
 	</sql>
 	<resultMap type="SecurityUser" id="resultUser_Role_Rights">
 		<id property="id" column="id"/>
@@ -136,9 +137,12 @@
 		INSERT INTO security_user_role_rel(user_id,role_id)
 		values(#{userId},#{roleId})
 	</insert>
+
+
 	<select id="findByNanme" parameterType="string" resultMap="resultUser_Role_Rights">
 		<include refid="findUserByName_sql" />
 		<where>
+			binary
 			u.user_name = #{name}
 			AND u.is_deleted = 0
 		</where>

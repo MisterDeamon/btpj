@@ -16,6 +16,8 @@ public interface SecurityRoleMapper extends BaseMapper<SecurityRole,Serializable
 
     public List<SecurityRole> findRolePage(@Param("pojo")SecurityRole role, @Param("pager")Pager<SecurityRole> page);
     public int findRoleCount(@Param("pojo")SecurityRole role, @Param("pager")Pager<SecurityRole> page);
+    public void setRight(@Param("rightId") String rightId,@Param("roleId") String roleId);
+    public void cancelRight(@Param("rightId") String rightId,@Param("roleId") String roleId);
 
 
 

@@ -39,6 +39,7 @@
                 /proton/** = anon
                 /file/** = anon
                 /checkName = anon
+                /websoket = anon
                 <!--/upload/** = anon-->
                 <!--/login/timeout = anon-->
                 <!--/front/nonames/** = anon-->

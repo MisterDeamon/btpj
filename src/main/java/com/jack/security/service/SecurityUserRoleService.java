@@ -1,12 +1,15 @@
 package com.jack.security.service;
 
 import com.jack.security.persistence.SecurityRoleMapper;
+import com.jack.security.pojo.SecurityPermission;
 import com.jack.security.pojo.SecurityRole;
 import com.jack.security.service.mybatis.AbstractService;
 import com.jack.utils.Pager;
+import com.jack.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,5 +36,37 @@ public class SecurityUserRoleService extends AbstractService<SecurityRole,String
         return this.getMapper().findAll();
     }
 
+    public void saveOrUpDate(SecurityRole role){
+
+        if(StringUtils.isEmpty(role.getRoleId())){
+            this.getMapper().save(role);
+        }else{
+            this.getMapper().update(role);
+        }
+
+    }
+
+    public void setRights(String[] rightIds,String roleId,List<SecurityPermission> permissions){
+        if(rightIds==null){
+            rightIds = new String[0];
+        }
+
+        List<String> ownedRightIds = new ArrayList<String>();
+        for(SecurityPermission permission : permissions){
+            ownedRightIds.add(permission.getRightId());
+        }
+
+        for(String rightId : rightIds){
+            if(!ownedRightIds.contains(rightId)){
+                this.getMapper().setRight(rightId,roleId);
+            }
+        }
+
+        for(String rightId : ownedRightIds){
+            if(!StringUtils.contains(rightId,rightIds)){
+                this.getMapper().cancelRight(rightId,roleId);
+            }
+        }
+    }
 
 }

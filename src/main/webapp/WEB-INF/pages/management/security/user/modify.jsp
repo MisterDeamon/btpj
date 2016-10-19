@@ -7,7 +7,6 @@
             <div class="panel-heading">
                 <h2><i class="fa fa-table red"></i><span class="break"></span><strong>编辑用户</strong></h2>
                 <div class="panel-actions">
-                    <a href="index.html#" class="btn-setting"><i class="fa fa-rotate-right"></i></a>
                     <a href="index.html#" class="btn-minimize"><i class="fa fa-chevron-up"></i></a>
                     <a href="index.html#" class="btn-close"><i class="fa fa-times"></i></a>
                 </div>

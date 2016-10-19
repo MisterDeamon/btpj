@@ -1,7 +1,12 @@
 package com.jack.utils;
 
+import com.jack.security.pojo.SecurityPermission;
+import com.jack.security.pojo.SecurityRole;
+
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by wajiangk on 8/24/2016.
@@ -92,5 +97,89 @@ public class StringUtils {
             return str.substring(0,15)+"...";
         else
             return str;
+    }
+
+
+    public static String parseNumToWord(int num){
+        String[] words = {"One","Two","Three","Four","Five","Sxi","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","SixTenn"};
+
+        if(num>0){
+            return words[num-1];
+        }else{
+            return "";
+        }
+
+    }
+
+
+    public static boolean hasRight(String rightId, SecurityRole role){
+        List<SecurityPermission> rights = role.getRights();
+
+        for(int i=0;i<rights.size();i++){
+            if(rightId.equals(rights.get(i).getRightId())){
+                return true;
+            }else{
+                if(i!=rights.size()-1){
+                    continue;
+                }else{
+                    return false;
+                }
+            }
+        }
+        return false;
+
+    }
+
+    public static String findRightId(String rightSn,String rightName,List<SecurityPermission> permissions){
+
+        for(int i=0;i<permissions.size();i++){
+            if(permissions.get(i).getRightSign().equals(rightSn)&&permissions.get(i).getRightName().equals(rightName)){
+                return permissions.get(i).getRightId();
+            }
+        }
+        return "";
+    }
+
+    public static boolean isBlank(final CharSequence cs) {
+        int strLen;
+        if (cs == null || (strLen = cs.length()) == 0) {
+            return true;
+        }
+        for (int i = 0; i < strLen; i++) {
+            if (Character.isWhitespace(cs.charAt(i)) == false) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isNotBlank(final CharSequence cs) {
+        return !StringUtils.isBlank(cs);
+    }
+
+    public static  boolean contains(String str, String[] strs){
+        for(int i=0;i<strs.length;i++){
+            if(str.equals(strs[i])){
+                return true;
+            }else{
+                if(i!=strs.length-1){
+                    continue;
+                }else{
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static String encodeUTF8(String str){
+        String result = "";
+        try {
+            String encode = getEncoding(str);
+            result = new String(str.getBytes(encode),"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }

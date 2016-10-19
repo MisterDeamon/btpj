@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.jack.security.pojo.SecurityUser;
 
 @Repository
-public interface SecurityUserMapper extends BaseMapper<SecurityUser,Serializable>{
+public interface SecurityUserMapper extends BaseMapper<SecurityUser,Serializable> {
 
 	public List<SecurityUser> findUserPage(@Param("pojo")SecurityUser user,@Param("pager")Pager<SecurityUser> page);
 	

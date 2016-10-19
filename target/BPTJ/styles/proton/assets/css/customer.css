@@ -19,5 +19,101 @@
 .panel-body form table tr td span{
     font-size:12px;
 }
+.list-headpic{
+    width:25px;
+    height:25px;
+}
+.user-avatar{
+    width:40px;
+    height: 40px;
+    border:2px solid black;
+    border-radius: 30px;
+}
 
+.user-friend-list {
+    padding: 0px;
 
+}
+.user-friend-list li{
+    list-style: none;
+    height:52px;
+}
+
+.user-friend-list li:hover{
+    background: #a6e1ec;
+}
+
+.user-friend-list li img{
+    width: 50px;
+    height: 50px;
+    border-radius:25px;
+}
+.stopLeft{
+    clear: left;
+}
+
+.searchFriend li{
+    width: 162px;
+    float: left;
+}
+
+.chatHistory{
+    height:250px;
+    border-collapse: separate;
+    border: 1px solid #d4d4d4;
+    z-index: 1000;
+    overflow: hidden;
+}
+.chatHistory{
+    height:250px;
+    border-collapse: separate;
+    border: 1px solid #d4d4d4;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.hisContent{
+    height:259px;
+    overflow: scroll;
+    margin-left: 5px;
+    margin-top: 5px;
+    z-index: 999;
+}
+.titleHeader{
+    color:cornflowerblue;
+}
+
+.hisContent span{
+    word-wrap:break-word;
+    word-break:break-all;
+    margin-left:15px;
+}
+
+.btn-toolbar{
+    margin-top: 5px;
+}
+.editorBox{
+    margin-top: 5px;
+    height: 150px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    color: #555;
+    width: 100%;
+    overflow: hidden;
+}
+#editor {
+    height: 165px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    display: block;
+    font-size: 14px;
+    line-height: 1.42857;
+    padding: 6px 12px;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    width: 103%;
+    overflow: scroll;
+}

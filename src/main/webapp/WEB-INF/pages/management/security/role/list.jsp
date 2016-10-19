@@ -8,28 +8,30 @@
             <div class="panel-heading">
                 <h2><i class="fa fa-table red"></i><span class="break"></span><strong>角色信息</strong></h2>
                 <div class="panel-actions">
-                    <a href="<%=basePath%>/management/security/user/list" class="btn-setting"><i class="fa fa-rotate-right"></i></a>
+                    <a href="<%=basePath%>/management/security/role/list" class="btn-setting"><i class="fa fa-rotate-right"></i></a>
                     <a href="#" class="btn-minimize"><i class="fa fa-chevron-up"></i></a>
                 </div>
             </div>
             <div class="panel-body">
                 <div class="btn-action">
-                    <shiro:hasPermission name="Role:create"></shiro:hasPermission>
+                    <shiro:hasPermission name="Role:create">
                         <a class="create btn btn-success "  href="<%=basePath%>/management/security/role/create" title="新增" id="create" data-toggle="modal">
                         <i class="fa fa-search-plus "></i>
                     </a>
-
-                    <shiro:hasPermission name="Role:modify"></shiro:hasPermission>
+                    </shiro:hasPermission>
+                    <shiro:hasPermission name="Role:modify">
                         <a class="btn btn-info" href="<%=basePath%>/management/security/role/modify" title="修改" id="modify"> <i class="fa fa-edit "></i></a>
-
-                    <shiro:hasPermission name="Role:delete"> </shiro:hasPermission>
+                    </shiro:hasPermission>
+                    <shiro:hasPermission name="Role:delete">
                         <a class="btn btn-danger" href="<%=basePath%>/management/security/role/delete" id="remove" title="删除">
                         <i class="fa fa-trash-o "></i>
                     </a>
-
-                    <a class="btn btn-warning" href="table.html#" title="分配权限">
+                    </shiro:hasPermission>
+                    <shiro:hasPermission name="Role:modify">
+                    <a class="btn btn-warning" href="<%=basePath%>/management/security/role/rightSet" id="rightSet" title="分配权限">
                         <i class="fa fa-users "></i>
                     </a>
+                    </shiro:hasPermission>
                     <form class="navbar-form navbar-right" style="margin-top:0px;" method="post" id="search" action="<%=basePath%>/management/security/role/list">
                         <a class="btn btn-default" href="javascript:void(0);" title="search" id="submitSf">
                             <i class="fa fa-search "></i>
@@ -44,7 +46,6 @@
                         <th><input type="checkbox" id="checkbox"  name="checkbox" value="0">选择</th>
                         <th>序号</th>
                         <th>角色名称</th>
-                        <th>权限名称</th>
                         <th>创建人</th>
                         <th>创建时间</th>
                         <th>更新者</th>
@@ -57,13 +58,6 @@
                         <td ><input type="checkbox" name="checkbox" value="${role.roleId}"></td>
                         <td>${index.count}</td>
                         <td>${role.roleName}</td>
-                        <td>
-                            <c:forEach var="right" items="${role.rights}" varStatus="index">
-                                <c:if test="${index.count<=4}">
-                                    ${right.rightName}&nbsp;
-                                </c:if>
-                            </c:forEach>
-                        </td>
                         <td>${role.createdBy}</td>
                         <td>${fnc:dateFormat(role.createdDate)}</td>
                         <td>${role.updatedBy}</td>

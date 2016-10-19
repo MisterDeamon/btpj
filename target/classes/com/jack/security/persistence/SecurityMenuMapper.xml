@@ -1,63 +1,293 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-        
+
 <mapper namespace="com.jack.security.persistence.SecurityMenuMapper">
-	<sql id="findMenu_sql">
+    <sql id="findMenu_sql">
 		SELECT
+		DISTINCT
 			  m.id,
 			  m.description,
 			  m.name,
 			  m.url,
-			  m.right_sn AS rightSn,
-			  m.icon ,
-			  m.parent_id AS parentId,
+			  m.right_sn,
+			  m.icon,
+			  m.is_parent,
+			  m.parent_id,
 			  m.priority
-	    FROM  security_menu m
+		FROM  security_menu m
 	</sql>
 
-	<!--<resultMap type="SecurityMenu" id="resultMenu">-->
-        <!--<id property="id" column="id"/>-->
-        <!--<result column="description" property="description"/>-->
-        <!--<result column="name" property="name"/>-->
-        <!--<result column="url" property="url"/>-->
-        <!--<result column="icon" property="icon"/>-->
-        <!--<result column="parent_id" property="parentId"/>-->
-        <!--<result column="right_sn" property="rightSn"/>-->
-        <!--<collection property="childrenMenus" ofType="SecurityMenu">-->
-		<!--</collection>-->
-    <!--</resultMap>-->
+    <sql id="findMenuRight_sql">
+		SELECT
+		m.id,
+		m.description,
+		m.name,
+		m.url,
+		m.right_sn,
+		m.is_parent,
+		m.icon,
+		m.parent_id,
+		m.priority,
+		r.id as rightId,
+		r.right_name,
+		r.right_sign
+		FROM  security_menu m
+		LEFT JOIN security_right r on m.right_sn = r.right_sign
+	</sql>
 
-	<select id="findById" parameterType="string" resultType="SecurityMenu">
-		<include refid="findMenu_sql" />
-		<where>
-			m.id = #{id} AND
-			m.is_deleted = 0
-			ORDER BY m.priority ASC
-		</where>
-	</select>
+    <select id="findMenuRight" parameterType="string" resultMap="resultMenu">
+        <include refid="findMenuRight_sql"/>
+        <where>
+            r.right_name = 'view' AND
+            m.is_parent = 1 AND
+            m.is_deleted = 0
+            ORDER BY m.priority ASC
+        </where>
+    </select>
 
-	<select id="findAllParentMenus"  resultType="SecurityMenu">
-		<include refid="findMenu_sql" />
-		<where>
-				m.is_deleted = 0 AND
-			<trim suffixOverrides="AND">
-				m.is_parent = 1 AND
-			</trim>
-			ORDER BY m.priority ASC
-		</where>
-	</select>
+    <resultMap type="SecurityMenu" id="resultMenu">
+        <id property="id" column="id"/>
+        <result column="description" property="description"/>
+        <result column="name" property="name"/>
+        <result column="url" property="url"/>
+        <result column="icon" property="icon"/>
+        <result column="is_parent" property="isParent"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="right_sn" property="rightSn"/>
+        <result column="priority" property="priority"/>
+        <result property="updatedDate" column="update_date"/>
+        <result property="updatedBy" column="update_by"/>
+        <result property="createdDate" column="create_date"/>
+        <result property="createdBy" column="create_by"/>
+        <association property="permission" javaType="SecurityPermission">
+            <result column="rightId" property="rightId"/>
+            <result column="right_sign" property="rightSign"/>
+            <result column="right_name" property="rightName"/>
+        </association>
+        <association property="parentMenu" column="parent_id" select="findById" />
+    </resultMap>
 
-	<select id="findChildrenMenus" parameterType="string" resultType="SecurityMenu">
-		<include refid="findMenu_sql" />
-		<where>
-			m.is_deleted = 0 AND
-			m.parent_id = #{parentId} AND
-			<trim suffixOverrides="AND">
-				m.is_parent = 0 AND
-			</trim>
-			ORDER BY m.priority ASC
-		</where>
-	</select>
+    <select id="findById" parameterType="string" resultMap="resultMenu">
+        <include refid="findMenu_sql"/>
+        <where>
+            m.id = #{id} AND
+            m.is_deleted = 0
+            ORDER BY m.priority ASC
+        </where>
+    </select>
+
+    <select id="findByName" parameterType="string" resultMap="resultMenu">
+        <include refid="findMenu_sql"/>
+        <where>
+            m.name = #{name} AND
+            m.is_deleted = 0
+            ORDER BY m.priority ASC
+        </where>
+    </select>
+
+    <select id="findAllParentMenus" resultMap="resultMenu">
+        <include refid="findMenu_sql"/>
+        <where>
+            m.is_deleted = 0 AND
+            <trim suffixOverrides="AND">
+                m.is_parent = 1 AND
+            </trim>
+            ORDER BY m.priority ASC
+        </where>
+    </select>
+
+    <select id="findChildrenMenus" parameterType="string" resultMap="resultMenu">
+        <include refid="findMenu_sql"/>
+        <where>
+            m.is_deleted = 0 AND
+            m.parent_id = #{parentId} AND
+            <trim suffixOverrides="AND">
+                m.is_parent = 0 AND
+            </trim>
+            ORDER BY m.priority ASC
+        </where>
+    </select>
+
+
+    <sql id="findMenuPage_sql">
+        SELECT
+        DISTINCT
+        m.id,
+        m.description,
+        m.name,
+        m.url,
+        m.right_sn,
+        m.icon ,
+        m.parent_id,
+        m.is_parent,
+        m.priority,
+        m.update_by,
+        m.update_date,
+        m.create_by,
+        m.create_date
+        FROM security_menu m
+        <where>
+            <trim suffixOverrides="AND">
+                m.is_deleted = 0 and
+                <if test="pojo.name != null and pojo.name != ''">
+                    m.name like CONCAT(CONCAT('%', #{pojo.name}),'%') and
+                </if>
+                <if test="pojo.rightSn != null and pojo.rightSn != ''">
+                    m.right_sn like CONCAT(CONCAT('%', #{pojo.rightSn}),'%') and
+                </if>
+                <if test="pojo.parentId != null and pojo.parentId != ''">
+                    m.parent_id = #{pojo.parentId} and
+                </if>
+            </trim>
+        </where>
+        order by m.id ASC
+    </sql>
+
+
+    <select id="findMenuPage" resultMap="resultMenu">
+        <include refid="Pager.paginationStart"/>
+        <include refid="findMenuPage_sql"/>
+        <include refid="Pager.paginationEnd"/>
+    </select>
+
+    <select id="findMenuCount" resultType="int">
+        <include refid="Pager.countStart"/>
+        <include refid="findMenuPage_sql"/>
+        <include refid="Pager.countEnd"/>
+    </select>
+
+
+    <insert id="save" parameterType="SecurityMenu">
+        <selectKey keyProperty="pojo.id" resultType="String" order="BEFORE">
+            select UUID_SHORT()
+        </selectKey>
+        INSERT INTO security_menu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            id,
+            <if test="pojo.name != null">
+                name,
+            </if>
+            <if test="pojo.rightSn != null">
+                right_sn,
+            </if>
+            <if test="pojo.url != null">
+                url,
+            </if>
+            <if test="pojo.parentId != null">
+                parent_id,
+            </if>
+            <if test="pojo.priority != null">
+                priority,
+            </if>
+            <if test="pojo.description != null">
+                description,
+            </if>
+            <if test="pojo.icon != null">
+                icon,
+            </if>
+            <if test="pojo.createdDate != null">
+                create_date,
+            </if>
+            <if test="pojo.createdBy != null">
+                create_by,
+            </if>
+            <if test="pojo.updatedDate != null">
+                update_date,
+            </if>
+            <if test="pojo.updatedBy != null">
+                update_by,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{pojo.id},
+            <if test="pojo.name != null">
+                #{pojo.name},
+            </if>
+            <if test="pojo.rightSn != null">
+                #{pojo.rightSn},
+            </if>
+            <if test="pojo.url != null">
+                #{pojo.url},
+            </if>
+            <if test="pojo.parentId != null">
+                #{pojo.parentId},
+            </if>
+            <if test="pojo.priority != null">
+                #{pojo.priority},
+            </if>
+            <if test="pojo.description != null">
+                #{pojo.description},
+            </if>
+            <if test="pojo.icon != null">
+                #{pojo.icon},
+            </if>
+            <if test="pojo.createdDate != null">
+                #{pojo.createdDate},
+            </if>
+            <if test="pojo.createdBy != null">
+                #{pojo.createdBy},
+            </if>
+            <if test="pojo.updatedDate != null">
+                #{pojo.updatedDate},
+            </if>
+            <if test="pojo.updatedBy != null">
+                #{pojo.updatedBy}
+            </if>
+        </trim>
+    </insert>
+
+    <update id="update">
+        UPDATE SECURITY_MENU
+        <set>
+            <if test="pojo.name != null">
+                name=#{pojo.name},
+            </if>
+            <if test="pojo.rightSn != null">
+                right_sn=#{pojo.rightSn},
+            </if>
+            <if test="pojo.priority != null">
+                priority=#{pojo.priority},
+            </if>
+            <if test="pojo.url != null">
+                url=#{pojo.url},
+            </if>
+            <if test="pojo.isParent != null">
+                is_parent=#{pojo.isParent},
+            </if>
+            <if test="pojo.parentId != null">
+                parent_id=#{pojo.parentId},
+            </if>
+            <if test="pojo.description != null">
+                description=#{pojo.description},
+            </if>
+            <if test="pojo.icon != null">
+                icon=#{pojo.icon},
+            </if>
+            <if test="pojo.updatedBy != null">
+                update_by=#{pojo.updatedBy},
+            </if>
+            <if test="pojo.updatedDate != null">
+                update_date=#{pojo.updatedDate}
+            </if>
+        </set>
+        <where>
+            id=#{pojo.id}
+        </where>
+    </update>
+
+    <delete id="delete" parameterType="string">
+        UPDATE security_menu
+        <set>
+            is_deleted = 1
+        </set>
+        <where>
+            <trim suffixOverrides="AND">
+                <if test="id!=null">
+                    id = #{id}
+                </if>
+            </trim>
+        </where>
+    </delete>
 
 </mapper>

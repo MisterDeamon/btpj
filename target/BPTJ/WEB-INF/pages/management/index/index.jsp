@@ -71,6 +71,20 @@
 
     <!-- inline scripts related to this page -->
     <script src="<%=protonPath%>/assets/js/pages/index.js"></script>
+
+
+
+    <link rel="stylesheet" href="<%=protonPath%>/assets/jQuery.emoji/lib/css/jquery.mCustomScrollbar.min.css"/>
+    <!--the css for this plugin-->
+    <link href="<%=protonPath%>/assets/jQuery.emoji/css/jquery.emoji.css" rel="stylesheet"/>
+    <!--(Optional) the js for jquery.mCustomScrollbar's addon-->
+    <script src="<%=protonPath%>/assets/jQuery.emoji/lib/script/jquery.mousewheel-3.0.6.min.js"></script>
+    <!--the js for jquery.mCustomScrollbar-->
+    <script src="<%=protonPath%>/assets/jQuery.emoji/lib/script/jquery.mCustomScrollbar.min.js"></script>
+    <script src="<%=protonPath%>/assets/jQuery.emoji/js/jquery.emoji.js"></script>
+
+
+
     <script type="text/javascript">
         var local = window.location;
         var contextPath = local.pathname.split("/")[1];
@@ -132,14 +146,13 @@
                     </li>
                 </ul>
             </li>
-
             <%--notification--%>
             <li class="dropdown visible-md visible-lg">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell-o"></i><span
-                        class="badge">3</span></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell-o"></i>
+                    <span class="badge" id="newMessageCount"></span></a>
                 <ul class="dropdown-menu">
                     <li class="dropdown-menu-header">
-                        <strong>Notifications</strong>
+                        <strong>新消息</strong>
                         <div class="progress thin">
                             <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="30"
                                  aria-valuemin="0" aria-valuemax="100" style="width: 30%">
@@ -147,15 +160,11 @@
                             </div>
                         </div>
                     </li>
-                    <li class="clearfix">
+                    <li class="clearfix" style="display: none">
                         <i class="fa fa-comment"></i>
-                        <a href="page-activity.html" class="notification-user"> Sharon Rose </a>
-                        <span class="notification-action"> replied to your </span>
-                        <a href="page-activity.html" class="notification-link"> comment</a>
-                    </li>
-
-                    <li class="dropdown-menu-footer text-center">
-                        <a href="page-activity.html">View all notification</a>
+                        <span name="from"></span>
+                        <span name="receiveDate"></span>
+                        <span name="msgContent"></span>
                     </li>
                 </ul>
             </li>
@@ -170,9 +179,9 @@
 
             <%--user info and setting--%>
             <li class="dropdown visible-md visible-lg">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img class="user-avatar"
-                                                                                src="<%=basePath%>/file/upload/headpic/${user.headPicPath}"
-                                                                                alt="user-mail">${user.email}</a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <img  src="<%=basePath%>/file/upload/headpic/${user.headPicPath}" alt="user-mail" style="border-radius: 29px; width: 39px;height: 39px;">${user.email}</a>
+                    <span style="display: none" name="userName">${user.userName}</span>
                 <ul class="dropdown-menu">
                     <li class="dropdown-menu-header">
                         <strong>Account</strong>
@@ -216,13 +225,13 @@
                         <c:forEach var="menu" items="${menus}">
                             <li>
                                 <a href="${menu.url}">
-                                    <i class="fa fa-file-text"></i><span class="text">${menu.name}</span>
+                                    <i class="fa ${menu.icon}"></i><span class="text">${menu.name}</span>
                                     <c:if test="${fn:length(menu.childrenMenus)>0}">
                                     <span class="fa fa-angle-down pull-right"></span>
                                 </a>
                                 <ul class="nav sub">
                                     <c:forEach var="child" items="${menu.childrenMenus}">
-                                        <li><a href="${child.url}" target=""><i class="fa fa-car"></i><span
+                                        <li><a href="${child.url}" target=""><i class="fa ${child.icon}"></i><span
                                                 class="text"> ${child.name}</span></a></li>
                                     </c:forEach>
                                 </ul>
@@ -265,8 +274,6 @@
                 </div>
             </div>
         </div>
-
-
 
 
     </div><!--/container-->

@@ -24,4 +24,27 @@
         <function-signature>java.lang.String ellipsisStr(java.lang.String)</function-signature>
         <example>${fnc:ellipsisStr(str)}</example>
     </function>
+
+    <function>
+        <description>parseNumToWords</description>
+        <name>parseNumToWord</name>
+        <function-class>com.jack.utils.StringUtils</function-class>
+        <function-signature>java.lang.String parseNumToWord(int)</function-signature>
+        <example>${fnc:parseNumToWord(num)}</example>
+    </function>
+    <function>
+        <description>hasRight</description>
+        <name>hasRight</name>
+        <function-class>com.jack.utils.StringUtils</function-class>
+        <function-signature>boolean hasRight(java.lang.String,com.jack.security.pojo.SecurityRole)</function-signature>
+        <example>${fnc:boolean(rightName,role)}</example>
+    </function>
+
+    <function>
+        <description>findRightId</description>
+        <name>findRightId</name>
+        <function-class>com.jack.utils.StringUtils</function-class>
+        <function-signature>java.lang.String findRightId(java.lang.String,java.lang.String,java.util.List)</function-signature>
+        <example>${fnc:findRightId(rightName,rightSn,permissions)}</example>
+    </function>
 </taglib>

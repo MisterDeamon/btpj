@@ -5,19 +5,20 @@ import com.jack.security.pojo.SecurityUser;
 import com.jack.security.service.SecurityUserRoleService;
 import com.jack.security.service.SecurityUserService;
 import com.jack.security.shiro.ShiroDbRealm;
-import com.jack.utils.PageUtils;
+import com.jack.security.webapp.asyncDemo.LongTimeAsyncCallService;
 import com.jack.utils.Pager;
 import com.jack.utils.StringUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -35,6 +36,10 @@ public class SecurityUserController extends BaseController{
     private SecurityUserService userService;
     @Autowired
     private SecurityUserRoleService userRoleService;
+    @Autowired
+    private LongTimeAsyncCallService longTimeAsyncCallService;
+
+    private static final Logger log = Logger.getLogger(SecurityUserController.class);
 
     private static final String LIST = "management/security/user/list";
     private static final String CREATE = "management/security/user/create";
@@ -42,22 +47,14 @@ public class SecurityUserController extends BaseController{
     private static final String ROLESET = "management/security/user/roleSet";
 
 
+    /**/
     @RequestMapping(value={"/list",""},method= {RequestMethod.GET,RequestMethod.POST})
     @RequiresPermissions("User:view")
     public String LIST(Model model,SecurityUser user,SecurityRole searchRole,HttpServletRequest request){
 
         Pager<SecurityUser> pager = new Pager<SecurityUser>();
         pager.setPageSize(5);
-        if (request != null) {
-            String pageNum = request.getParameter("pageNum");
-            if (org.apache.commons.lang3.StringUtils.isNotBlank(pageNum)) {
-                pager.setPageNumber(new Integer(pageNum));
-            }
-            String numPerPage = request.getParameter("numPerPage");
-            if (StringUtils.isNotEmpty(numPerPage)) {
-                pager.setPageSize(new Integer(numPerPage));
-            }
-        }
+        setPageInfo(request,pager);
 
         List<SecurityRole> searchRoles=null;
         if(null!=searchRole.getRoleName()&&!"".equals(searchRole.getRoleName())){
@@ -74,7 +71,6 @@ public class SecurityUserController extends BaseController{
         }
         pager.setTotalCount(total);
         pager.setResult(userList);
-        pager.setTotalCount(total);
         pager.setFirstandLastPn();
         model.addAttribute("page", pager);
         model.addAttribute("userList", pager.getResult());
@@ -82,6 +78,13 @@ public class SecurityUserController extends BaseController{
         model.addAttribute("searchRole", searchRole);
         return LIST;
     }
+
+
+    /*@RequestMapping(value={"/list",""},method= {RequestMethod.GET,RequestMethod.POST})
+    @RequiresPermissions("User:view")
+    public Callable<ModelAndView> LIST(SecurityUser user, SecurityRole searchRole, HttpServletRequest request){
+
+    }*/
 
     /**
      * create User
@@ -105,17 +108,15 @@ public class SecurityUserController extends BaseController{
     public @ResponseBody
     String create(HttpServletRequest request, SecurityUser user, @RequestParam("file")MultipartFile file){
 
-        Map<String,Object> map = new HashMap<String,Object>();
+        user.setUserName(StringUtils.encodeUTF8(user.getUserName()));
 
+        Map<String,Object> map = new HashMap<String,Object>();
         Subject subject = SecurityUtils.getSubject();
         ShiroDbRealm.ShiroUser shiroUser = (ShiroDbRealm.ShiroUser) subject.getPrincipal();
-        String result = "";
         try {
             user.setPlainPasswd(request.getParameter("password"));
-            user.setCreatedDate(new Date());
-            user.setCreatedBy(shiroUser.getUser().getUserName());
-            user.setUpdatedDate(new Date());
-            user.setUpdatedBy(shiroUser.getUser().getUserName());
+            userService.preCreate(user,shiroUser);
+            userService.preUpdate(user,shiroUser);
             String fileName = uploadHeadPic(request, file, "/file/upload/headpic");
             if (!fileName.equals("")) {
                 user.setHeadPicPath(fileName);
@@ -128,14 +129,8 @@ public class SecurityUserController extends BaseController{
             map.put("success",false);
             e.printStackTrace();
         }
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            result = mapper.writeValueAsString(map);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
 
-        return result;
+        return getJsonResult(map);
     }
 
     /**
@@ -146,7 +141,7 @@ public class SecurityUserController extends BaseController{
      */
     @RequestMapping(value="/modify",method = RequestMethod.GET)
     @RequiresPermissions("User:modify")
-    public  String modify(@RequestParam("userId") String userId,Model model) {
+    public  String modify(@RequestParam("id") String userId,Model model) {
         model.addAttribute("user",userService.findById(userId));
         return MODIFY;
     }
@@ -163,19 +158,14 @@ public class SecurityUserController extends BaseController{
     public @ResponseBody
     String modify(HttpServletRequest request, SecurityUser user, @RequestParam("file")MultipartFile file){
 
+        user.setUserName(StringUtils.encodeUTF8(user.getUserName()));
 
         Map<String,Object> map = new HashMap<String,Object>();
-        System.out.println(file.getSize());
-        System.out.println(file.isEmpty());
-        String result = "";
-
         Subject subject = SecurityUtils.getSubject();
         ShiroDbRealm.ShiroUser shiroUser = (ShiroDbRealm.ShiroUser) subject.getPrincipal();
         try {
             user.setPlainPasswd(request.getParameter("password"));
-            user.setUpdatedDate(new Date());
-            user.setUpdatedBy(shiroUser.getUser().getUserName());
-
+            userService.preUpdate(user,shiroUser);
             String fileName = uploadHeadPic(request, file, "/file/upload/headpic");
             if (!fileName.equals("")) {
                 user.setHeadPicPath(fileName);
@@ -190,14 +180,7 @@ public class SecurityUserController extends BaseController{
             e.printStackTrace();
         }
 
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            result = mapper.writeValueAsString(map);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-
-        return result;
+        return getJsonResult(map);
     }
 
     public String uploadHeadPic(HttpServletRequest request,MultipartFile file,String savePath){
@@ -225,11 +208,8 @@ public class SecurityUserController extends BaseController{
      */
     @RequestMapping(value="/delete",method = RequestMethod.POST,produces ="application/json;charset=UTF-8" )
     @RequiresPermissions("User:delete")
-    public @ResponseBody String deleteUser(@RequestParam("userIds")String[] userIds){
+    public @ResponseBody String deleteUser(@RequestParam("ids")String[] userIds){
         Map<String,Object> map = new HashMap<String,Object>();
-        String result = "";
-        ObjectMapper mapper = new ObjectMapper();
-
         try{
             for(String id:userIds){
                 userService.remove(id);
@@ -240,12 +220,7 @@ public class SecurityUserController extends BaseController{
             map.put("success",false);
             e.printStackTrace();
         }
-        try {
-            result = mapper.writeValueAsString(map);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
+        return getJsonResult(map);
     }
 
     /**
@@ -257,9 +232,6 @@ public class SecurityUserController extends BaseController{
     @RequestMapping(value = "/changeAccountStatus",method=RequestMethod.GET,produces ="application/json;charset=UTF-8" )
     public @ResponseBody  String unlockAccount(@RequestParam("userId")String userId,@RequestParam("status") int status){
         Map<String,Object> map= new HashMap<String,Object>();
-        String result = "";
-        ObjectMapper mapper = new ObjectMapper();
-
         try {
 
             map.put("success",true);
@@ -270,12 +242,11 @@ public class SecurityUserController extends BaseController{
                 userService.relockAccount(userId);
                 map.put("msg","解锁成功");
             }
-            result = mapper.writeValueAsString(map);
         }catch (Exception e){
             map.put("success",false);
             e.printStackTrace();
         }
-        return result;
+        return getJsonResult(map);
     }
 
     /**
@@ -285,7 +256,7 @@ public class SecurityUserController extends BaseController{
      * @return
      */
     @RequestMapping(value = "/roleSet",method=RequestMethod.GET,produces ="application/json;charset=UTF-8" )
-    public String roleSet(@RequestParam("userId")String userId,Model model){
+    public String roleSet(@RequestParam("id")String userId,Model model){
 
         SecurityUser tempUser = userService.findById(userId);
         List<SecurityRole> roles = userRoleService.findAll();
@@ -306,9 +277,7 @@ public class SecurityUserController extends BaseController{
     @RequestMapping(value = "/roleSet",method=RequestMethod.POST,produces ="application/json;charset=UTF-8" )
     public @ResponseBody String roleSet(HttpServletRequest request,@RequestParam("userId") String userId){
         String[] roleIds = request.getParameterValues("roleId");
-        String result = "";
         Map<String,Object> map = new HashMap<String, Object>();
-        ObjectMapper mapper = new ObjectMapper();
         try{
             SecurityUser temp = userService.findById(userId);
 
@@ -323,13 +292,8 @@ public class SecurityUserController extends BaseController{
             e.printStackTrace();
         }
 
-        try {
-            result = mapper.writeValueAsString(map);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        return result;
+        return getJsonResult(map);
     }
 
 

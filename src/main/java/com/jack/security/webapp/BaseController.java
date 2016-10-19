@@ -1,6 +1,13 @@
 package com.jack.security.webapp;
 
 import com.jack.utils.Pager;
+import com.jack.utils.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by wajiangk on 9/23/2016.
@@ -23,4 +30,29 @@ public class BaseController {
 //        }
 //
 //    }
+
+    protected String getJsonResult(Map<String,Object> map){
+        String result = "";
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            result = mapper.writeValueAsString(map);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    protected void setPageInfo(HttpServletRequest request,Pager pager){
+        if (request != null) {
+            String pageNum = request.getParameter("pageNum");
+            if (org.apache.commons.lang3.StringUtils.isNotBlank(pageNum)) {
+                pager.setPageNumber(new Integer(pageNum));
+            }
+            String numPerPage = request.getParameter("numPerPage");
+            if (StringUtils.isNotEmpty(numPerPage)) {
+                pager.setPageSize(new Integer(numPerPage));
+            }
+        }
+
+    }
 }

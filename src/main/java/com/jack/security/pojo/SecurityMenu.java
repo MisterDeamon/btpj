@@ -18,6 +18,10 @@ public class SecurityMenu extends BaseEntity implements Serializable{
     private int priority;
     private int isParent;
 
+    private SecurityMenu parentMenu;
+
+    private SecurityPermission permission;
+
     private List<SecurityMenu> childrenMenus;
 
     public SecurityMenu() {
@@ -113,6 +117,22 @@ public class SecurityMenu extends BaseEntity implements Serializable{
 
     public void setChildrenMenus(List<SecurityMenu> childrenMenus) {
         this.childrenMenus = childrenMenus;
+    }
+
+    public SecurityPermission getPermission() {
+        return permission;
+    }
+
+    public void setPermission(SecurityPermission permission) {
+        this.permission = permission;
+    }
+
+    public SecurityMenu getParentMenu() {
+        return parentMenu;
+    }
+
+    public void setParentMenu(SecurityMenu parentMenu) {
+        this.parentMenu = parentMenu;
     }
 
     @Override

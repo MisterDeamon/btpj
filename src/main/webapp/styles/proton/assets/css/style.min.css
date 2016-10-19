@@ -1527,7 +1527,7 @@ select.input-sm {
 }
 .editor {
   max-height: 250px;
-  height: 250px;
+  height: 200px;
   background-color: white;
   border-collapse: separate;
   border: 1px solid #d4d4d4;
@@ -1538,9 +1538,9 @@ select.input-sm {
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
-  overflow: scroll;
+  overflow: hidden;
   outline: none;
-  margin-top: 20px;
+  margin-top: 5px;
 }
 div[data-role="editor-toolbar"] {
   -webkit-user-select: none;

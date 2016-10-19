@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jack.security.persistence.FriendMapper">
+
+    <insert id="save" parameterType="Friend">
+        INSERT INTO bpj_friend
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                user_id,
+            <if test="pojo.friendGroup != null ">
+                friend_group_id,
+            </if>
+            <if test="pojo.userFriend != null">
+                friend_user_id,
+            </if>
+            <if test="pojo.friendCommentName != null and pojo.friendCommentName !=''">
+                friend_comment_name,
+            </if>
+            <if test="pojo.createdDate != null">
+                create_date,
+            </if>
+            <if test="pojo.createdBy != null">
+                create_by,
+            </if>
+            <if test="pojo.updatedDate != null">
+                update_date,
+            </if>
+            <if test="pojo.updatedBy != null">
+                update_by,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+               #{pojo.userId},
+            <if test="pojo.friendGroup != null ">
+                #{pojo.friendGroup.groupId},
+            </if>
+            <if test="pojo.userFriend != null">
+                #{pojo.userFriend.id},
+            </if>
+            <if test="pojo.friendCommentName != null and pojo.friendCommentName !=''">
+                #{pojo.friendCommentName},
+            </if>
+            <if test="pojo.createdDate != null">
+                #{pojo.createdDate},
+            </if>
+            <if test="pojo.createdBy != null">
+                #{pojo.createdBy},
+            </if>
+            <if test="pojo.updatedDate != null">
+                #{pojo.updatedDate},
+            </if>
+            <if test="pojo.updatedBy != null">
+                #{pojo.updatedBy}
+            </if>
+        </trim>
+    </insert>
+
+
+    <!--<update id="update">
+        UPDATE bpj_friend_group
+        <set>
+            <if test="pojo.groupName != null and pojo.groupName !=''">
+                group_name=#{pojo.groupName},
+            </if>
+            <if test="pojo.groupPriority != null and pojo.groupPriority !=''">
+                group_priority=#{pojo.groupPriority},
+            </if>
+            <if test="pojo.updatedBy != null">
+                update_by=#{pojo.updatedBy},
+            </if>
+            <if test="pojo.updatedDate != null">
+                update_date=#{pojo.updatedDate}
+            </if>
+        </set>
+        <where>
+            group_id=#{pojo.groupId} and user_id = #{pojo.userId}
+        </where>
+    </update>
+
+    <delete id="remove" parameterType="FriendGroup">
+        UPDATE bpj_friend_group
+        <set>
+            is_deleted = 1
+        </set>
+        <where>
+            user_id = #{pojo.userId} and
+            group_id = #{pojo.groupId}
+        </where>
+    </delete>-->
+
+</mapper>

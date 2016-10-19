@@ -7,6 +7,7 @@ $(document).ready(function(e){
     $(".sidebar-menu a").live("click",function(event){
         var  str="";
         var ctg = $(this).children().text();
+        var ctgCls = $(this).find("i").attr("class");
         if(ctg!="首 页"){
             if($(this).attr("href")=="javascript:;"){
                 $(this).parent().find("ul").first().slideToggle("normal", function (){
@@ -19,6 +20,7 @@ $(document).ready(function(e){
             }else{
                 event.preventDefault();
                 var pCtg = $(this).parent().parent().parent().find("a").first().text();
+                var pCtgCls =  $(this).parent().parent().parent().find("a").first().find("i").attr("class");
                 $.ajax({
                     type:'get',
                     dataType:'html',
@@ -29,8 +31,8 @@ $(document).ready(function(e){
                             "<h3 class='page-header'><i class='fa fa-home'></i>"+ctg+"</h3>"+
                             " <ol class='breadcrumb'>"+
                             " <li><a href='"+ctx+"/management/index'><i class='fa fa-home'></i>Home</a></li>"+
-                            "<li><i class='fa fa-home'></i>"+pCtg+"</a></li>"+
-                            "<li><i class='fa fa-home'></i>"+ctg+"</a></li>"+
+                            "<li><i class='"+pCtgCls+"'></i>"+pCtg+"</a></li>"+
+                            "<li><i class='"+ctgCls+"'></i>"+ctg+"</a></li>"+
                             " </ol>"+
                             " </div>"+
                             "  </div>";
@@ -42,7 +44,6 @@ $(document).ready(function(e){
         }else{
             changeBg($(this).parent());
         }
-
         function changeBg(node){
            $(".sidebar-menu li").each(function(index,item){
                if(node.text()!=$(item).text()){
@@ -53,7 +54,6 @@ $(document).ready(function(e){
            });
         }
     });
-
     //validate userName
     $("body").on("blur",":input[name='userName']",function(){
         var userName = $(this).val();
@@ -78,7 +78,6 @@ $(document).ready(function(e){
             });
         }
     });
-
     //validate idCard
     $("body").on("blur",":input[name='idCard']",function(){
         var idCard = $(this).val();
@@ -125,7 +124,6 @@ $(document).ready(function(e){
 
         showInfo($(this),info);
     });
-
     //validate email
     $("body").on("blur",":input[name='email']",function(){
         var email = $(this).val();
@@ -171,6 +169,15 @@ $(document).ready(function(e){
         }
         showInfo($(this),info);
     });
+
+    $("body").on("blur",":input[name='roleName']",function(){
+        var roleName = $(this).val();
+        var info={"type":true,"msg":"✔"};
+        if(roleName==""){
+            info={"type":false,"msg":"角色名不能为空"};
+        }
+        showInfo($(this),info);
+    });
     function showInfo(node,info){
         if(info.type){
             node.parent().find("span").removeAttr("class").addClass("alert-success").html(info.msg);
@@ -179,7 +186,6 @@ $(document).ready(function(e){
         }
 
     }
-
 
     //validate form
     $("body").on("click",":button[type='submit']",function(e){
@@ -205,15 +211,14 @@ $(document).ready(function(e){
                 fileElementId:'file',
                 type:'POST',
                 url:url,
-                scriptCharset: 'utf-8',
+                contentType: 'application/json',
                 dataType:'json',
                 success:function(r){
-                    console.log(r);
                     if(r.success){
                         showEditInfo(form,r);
 
                     }else{
-                        form.parent().find(".alert").find("strong").html("系统内部错误，保存用户失败");
+                        form.parent().find(".alert").find("strong").html("系统内部错误，保存失败");
                         form.parent().find(".alert").show("slow");
                         setTimeout(function(){
                             form.parent().find(".alert").hide("slow");
@@ -241,7 +246,7 @@ function showEditInfo(node,r){
     node.parent().find(".alert").removeClass("alert-danger").addClass("alert-success").find("strong").html(r.msg);
     node.parent().find(".alert").show("slow");
     setTimeout(function(){
-        form.parent().find(".alert").hide("slow");
+        node.parent().find(".alert").hide("slow");
     },2000);
     setTimeout(function(){
         $(".sidebar-menu a").each(function(){
@@ -249,5 +254,5 @@ function showEditInfo(node,r){
                 $(this).click();
             }
         });
-    },3000);
+    },2400);
 }

@@ -4,7 +4,6 @@ function isEmail(email) {
 }
 
 $(document).ready(function(){
-	
 	$('#ccnumber-w1').mask("9999 9999 9999 9999");
 	
 	/* ---------- Wizard ---------- */

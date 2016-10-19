@@ -15,7 +15,7 @@ public class SecurityPermission extends BaseEntity implements Serializable,Permi
 	
 	private String rightId;
 	private String rightName;
-	private String rightUrl;
+	private String rightUrl = "/";
 	private String rightIcon;
 	private String rightSign;
 
