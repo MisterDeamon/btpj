@@ -110,12 +110,9 @@ public class WebSocketEndPoint extends AbstractWebSocketHandler {
     //连接打开时执行
     @OnOpen
     public void onOpen(Session session,EndpointConfig config) {
-        System.out.println("Connected ... " + session.getId());
         HttpSession httpSession= (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
         currentUser = ((SecurityUser)httpSession.getAttribute("user")).getUserName();
-        logger.debug(currentUser+"链接成功......");
         users.put(currentUser,session);
-        System.out.println(currentUser+"Connection Establied!");
 
     }
 
@@ -123,11 +120,10 @@ public class WebSocketEndPoint extends AbstractWebSocketHandler {
     @OnMessage
     public void onMessage(String message, Session session) {
         session.getUserPrincipal();
+
         JSONObject jsonMsg = new JSONObject(message);
         String targetFriend = jsonMsg.get("target").toString();
-
         Map<String,Object> map = new HashMap<String, Object>();
-
         if(targetFriend.equals("group")){
 
         }else{
@@ -145,6 +141,11 @@ public class WebSocketEndPoint extends AbstractWebSocketHandler {
         }
 
     }
+
+
+//    {'from':'Jack','target':'Lucy','msgContent':'Hello Lucy\, I\'m Jack'}
+
+
 
     //连接关闭时执行
     @OnClose
@@ -168,6 +169,7 @@ public class WebSocketEndPoint extends AbstractWebSocketHandler {
         }
         return result;
     }
+
 
 
 }

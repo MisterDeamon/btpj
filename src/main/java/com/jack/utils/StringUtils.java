@@ -4,9 +4,9 @@ import com.jack.security.pojo.SecurityPermission;
 import com.jack.security.pojo.SecurityRole;
 
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by wajiangk on 8/24/2016.
@@ -182,4 +182,31 @@ public class StringUtils {
         }
         return result;
     }
+
+
+
+    private static Map<Integer,String> weeks;
+    public static String getWeek(String dateStr) throws ParseException {
+
+        if(dateStr.length()<=10){
+            dateStr+=" 00:00:00";
+        }
+
+        if(weeks==null){
+            weeks = new HashMap<Integer, String>();
+            weeks.put(0,"周日");
+            weeks.put(1,"周一");
+            weeks.put(2,"周二");
+            weeks.put(3,"周三");
+            weeks.put(4,"周四");
+            weeks.put(5,"周五");
+            weeks.put(6,"周六");
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(SDF_1.parse(dateStr));
+        int intWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        return weeks.get(intWeek);
+    }
+
+
 }

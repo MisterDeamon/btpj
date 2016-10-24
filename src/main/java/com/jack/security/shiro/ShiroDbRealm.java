@@ -65,7 +65,6 @@ public class ShiroDbRealm extends AuthorizingRealm {
         UsernamePasswordToken token = (UsernamePasswordToken)auctoken;
         SecurityUser user = null;
         try{
-            System.out.println(token.getUsername());
             user= securityUserService.findByName(token.getUsername());
             }catch (Exception e){
             e.printStackTrace();
@@ -117,7 +116,6 @@ public class ShiroDbRealm extends AuthorizingRealm {
                 Set<String> permissionList = new HashSet<String>();
                 for(SecurityPermission permission:userRole.getRights()){
                     permissionList.add(permission.getRightSign()+":"+permission.getRightName());
-//                    info.addObjectPermission(permission);
                 }
                 info.addStringPermissions(permissionList);
             }
@@ -125,9 +123,7 @@ public class ShiroDbRealm extends AuthorizingRealm {
         } else {
             return null;
         }
-
     }
-
 
     public static class HashPassword {
         public String salt;

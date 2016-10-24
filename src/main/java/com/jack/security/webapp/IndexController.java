@@ -1,14 +1,12 @@
 package com.jack.security.webapp;
 
-import com.jack.security.pojo.SecurityMenu;
-import com.jack.security.pojo.SecurityPermission;
-import com.jack.security.pojo.SecurityRole;
-import com.jack.security.pojo.SecurityUser;
+import com.jack.security.pojo.*;
 import com.jack.security.service.SecurityMenuService;
 import com.jack.security.service.SecurityUserRoleService;
 import com.jack.security.service.SecurityUserService;
 import com.jack.security.shiro.ShiroDbRealm;
 import com.jack.utils.SecurityConstants;
+import com.jack.utils.WeatherInfo;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.subject.Subject;
@@ -17,12 +15,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by wajiangk on 9/2/2016.
@@ -30,7 +26,7 @@ import java.util.Set;
 
 @Controller
 @RequestMapping(value = "/management")
-public class IndexController {
+public class IndexController extends BaseController{
 
     private static final String INDEX="management/index/index";
 
@@ -107,4 +103,33 @@ public class IndexController {
         return parentMenusChecked;
     }
 
+    @RequestMapping(value = "/weatherInfo",method = RequestMethod.GET)
+    public @ResponseBody  String weatherInfo(HttpServletRequest request){
+        String requestUrl = getRemortIP(request);
+        requestUrl = "114.80.166.240";
+//        requestUrl = "59.108.111.17";
+//        requestUrl = "222.90.212.164";
+        Map<String,Object> map = null;
+        WeatherInfo weatherInfo = new WeatherInfo();
+        try {
+            map  = weatherInfo.now_weatherInfo(requestUrl);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return getJsonResult(map);
+    }
+
+
+    private String getRemortIP(HttpServletRequest request) {
+
+        if (request.getHeader("x-forwarded-for") == null) {
+
+            return request.getRemoteAddr();
+
+        }
+
+        return request.getHeader("x-forwarded-for");
+
+    }
 }

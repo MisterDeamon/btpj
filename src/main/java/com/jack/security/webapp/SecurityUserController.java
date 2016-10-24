@@ -52,8 +52,11 @@ public class SecurityUserController extends BaseController{
     @RequiresPermissions("User:view")
     public String LIST(Model model,SecurityUser user,SecurityRole searchRole,HttpServletRequest request){
 
+
+        log.info(request.getLocalAddr());
+
         Pager<SecurityUser> pager = new Pager<SecurityUser>();
-        pager.setPageSize(5);
+        pager.setPageSize(10);
         setPageInfo(request,pager);
 
         List<SecurityRole> searchRoles=null;

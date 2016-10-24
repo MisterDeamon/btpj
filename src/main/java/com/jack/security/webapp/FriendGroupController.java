@@ -57,7 +57,7 @@ public class FriendGroupController extends BaseController {
     @RequestMapping(value={"/friendGroup","/friendGroup/list"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String groupList(Model model, HttpServletRequest request,FriendGroup searchfriendGroup){
         Pager<FriendGroup> pager = new Pager<FriendGroup>();
-        pager.setPageSize(5);
+        pager.setPageSize(10);
         setPageInfo(request,pager);
 
         String userId = ((ShiroDbRealm.ShiroUser) SecurityUtils.getSubject().getPrincipal()).getId();

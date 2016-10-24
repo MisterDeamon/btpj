@@ -37,7 +37,7 @@ public class SecurityMenuController extends BaseController {
 //    @RequiresPermissions("Menu:view")
     public String list(HttpServletRequest request, SecurityMenu searchMenu, Model model) {
         Pager<SecurityMenu> pager = new Pager<SecurityMenu>();
-        pager.setPageSize(5);
+        pager.setPageSize(10);
         setPageInfo(request,pager);
 
         String parentName = request.getParameter("parentName");

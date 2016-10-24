@@ -82,6 +82,9 @@
 .titleHeader{
     color:cornflowerblue;
 }
+.rec{
+    color:pink;
+}
 
 .hisContent span{
     word-wrap:break-word;

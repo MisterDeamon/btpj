@@ -1,9 +1,9 @@
-var JSON = function(sJSON){
+var JsonObj = function(sJSON){
     this.objType = (typeof sJSON);
     this.self = [];
     (function(s,o){for(var i in o){o.hasOwnProperty(i)&&(s[i]=o[i],s.self[i]=o[i])};})(this,(this.objType=='string')?eval('0,'+sJSON):sJSON);
 }
-JSON.prototype = {
+JsonObj.prototype = {
     toString:function(){
         return this.getString();
     },

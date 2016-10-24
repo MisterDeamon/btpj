@@ -4,6 +4,8 @@
 
 $(document).ready(function(e){
 
+
+
     $(".sidebar-menu a").live("click",function(event){
         var  str="";
         var ctg = $(this).children().text();
@@ -240,8 +242,27 @@ $(document).ready(function(e){
 
     $("body").on("click",":button[type='remove']",function(e){});
 
-});
+    Date.prototype.format = function(fmt)
+    { //author: meizz
+        var o = {
+            "M+" : this.getMonth()+1, //月份
+            "d+" : this.getDate(), //日
+            "h+" : this.getHours()%12 == 0 ? 12 : this.getHours()%12, //小时
+            "H+" : this.getHours(), //小时
+            "m+" : this.getMinutes(), //分
+            "s+" : this.getSeconds(), //秒
+            "q+" : Math.floor((this.getMonth()+3)/3), //季度
+            "S" : this.getMilliseconds() //毫秒
+        };
+        if(/(y+)/.test(fmt))
+            fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+        for(var k in o)
+            if(new RegExp("("+ k +")").test(fmt))
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+        return fmt;
+    }
 
+});
 function showEditInfo(node,r){
     node.parent().find(".alert").removeClass("alert-danger").addClass("alert-success").find("strong").html(r.msg);
     node.parent().find(".alert").show("slow");
@@ -256,3 +277,4 @@ function showEditInfo(node,r){
         });
     },2400);
 }
+

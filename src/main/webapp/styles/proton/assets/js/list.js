@@ -378,33 +378,51 @@ $(document).ready(function () {
         window.websocket.onmessage = function (evnt) {
             var msg=JSON.parse(evnt.data);
             window.newMsgCount = Number($("#newMessageCount").text());
-            window.newMsgCount++;
-            $("#newMessageCount").text(window.newMsgCount);
             var notificationNode = $("#newMessageCount").parent().parent();
-            $("#newMessageCount").parent().parent().find(".clearfix").css("display","block")
             var friendName=notificationNode.find(".clearfix").find("span[name='from']").text();
             var msgParsed = msg.msgContent.replace(/#qq_/g,"<img src='"+ctx+"/styles/proton//assets/jQuery.emoji/img/qq/").replace(/#/g,".gif'>");
-            if(friendName==""||friendName==msg.from){
-                notificationNode.find(".clearfix").find("span[name='from']").html(msg.from);
-                notificationNode.find(".clearfix").find("span[name='receiveDate']").html(msg.receiveDate);
-                notificationNode.find(".clearfix").find("span[name='msgContent']").html(msgParsed.substr(0,10)+"...");
+            var date = new Date().format("yyyy-MM-dd HH:mm:ss");
+            var htmlMsg ="<div class='titleHeader rec'>"+ msg.from+"("+date+")：" + "</div><span>"+msgParsed+"</span>" ;
+            var tempF = msg.from;
+            var cookieName =$("span[name='userName']").text()+"chatHistoryWith"+msg.from;
+            var hisJsonString;
+            if($.cookie(cookieName)==undefined){
+                hisJsonString ='{"chatWith":"'+tempF+'","chatHisContent":"'+htmlMsg.replace(/"/g,"\\\"").replace(/'/g,"\\\'").replace(/"\(/,"(").replace(/\)"/,")").replace(/\n\n/g,"")+'"}';
+                $.cookie(cookieName,"("+hisJsonString+")","{ expires: 7, path: '/' }");
             }else{
-                  var newNotification = "<li class='clearfix'><i class='fa fa-comment'></i>"+
-                        +"<span name='from'>"+msg.from+"</span>"
-                        +"<span name='receiveDate'>"+msg.receiveDate+"</span>"
-                        +"<span name='msgContent'>"+msgParsed.substr(0,10)+"...</span></li>"
-                notificationNode.find(".dropdown-menu").append(newNotification);
-
+                console.log(cookieName+"--"+$.cookie(cookieName))
+                var hisJson = eval($.cookie(cookieName).replace(/'/g,"\\\'"));
+                var hisJsonContent=hisJson.chatHisContent+htmlMsg;
+                hisJsonString ='{"chatWith":"'+tempF+'","chatHisContent":"'+hisJsonContent.replace(/"/g,"\\\"").replace(/'/g,"\\\'").replace(/"\(/,"(").replace(/\)"/,")").replace(/\n\n/g,"")+'"}';
+                $.cookie(cookieName,"("+hisJsonString+")","{ expires: 7, path: '/' }");
             }
 
+            var isNotShowedMsg = true;
             $("input[name='chatWith']").each(function(){
                 if($(this).val()==msg.from){
-                    $(this).parent().parent().find("#history").find(".hisContent")
-                        .append("<div class='titleHeader'>"+ msg.from+"("+msg.from+")：" + "</div><span>"+msgParsed+"</span>");
-                    $(".hisContent").scrollTop( $(".hisContent")[0].scrollHeight);
+                    $(this).parent().parent().find("#history").find(".hisContent").append(htmlMsg);
+                    isNotShowedMsg=false;
+                }
+                $(".hisContent").scrollTop( $(".hisContent")[0].scrollHeight);
+            });
+            if(isNotShowedMsg){
+                $("#newMessageCount").parent().parent().find(".clearfix").css("display","block");
+                window.newMsgCount++;
+                $("#newMessageCount").text(window.newMsgCount);
+                if(friendName==""||friendName==msg.from){
+                    notificationNode.find(".clearfix").find("span[name='from']").html(msg.from);
+                    notificationNode.find(".clearfix").find("span[name='receiveDate']").html(msg.receiveDate);
+                    notificationNode.find(".clearfix").find("span[name='msgContent']").html(msgParsed.substr(0,10)+"...");
+                }else{
+                    var newNotification = "<li class='clearfix'><i class='fa fa-comment'></i><span name='from'>"+msg.from
+                        +"</span><span name='receiveDate'>"+msg.receiveDate+"</span>"
+                        +"<span name='msgContent'>"+msgParsed.substr(0,10)+"...</span></li>"
+                    notificationNode.find(".dropdown-menu").append(newNotification);
+                    console.log(newNotification+"----"+msg.from);
 
                 }
-            });
+            }
+
 
 
         };

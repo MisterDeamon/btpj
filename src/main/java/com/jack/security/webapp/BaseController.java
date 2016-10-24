@@ -2,6 +2,7 @@ package com.jack.security.webapp;
 
 import com.jack.utils.Pager;
 import com.jack.utils.StringUtils;
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,9 @@ import java.util.Map;
  * Created by wajiangk on 9/23/2016.
  */
 public class BaseController {
+
+
+    protected  Logger log = Logger.getLogger(BaseController.class);
 
 //    protected int f_page = 0;//分页显示第一个页码
 //    protected int l_page = 0;//分页显示最后一个页码

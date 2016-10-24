@@ -47,7 +47,7 @@ public class SecurityRoleController extends BaseController {
 //    @RequiresPermissions("Role:view")
     public String list(HttpServletRequest request, SecurityRole searchRole, SecurityPermission searchPermission, Model model) {
         Pager<SecurityRole> pager = new Pager<SecurityRole>();
-        pager.setPageSize(5);
+        pager.setPageSize(10);
         setPageInfo(request, pager);
 
         List<SecurityPermission> searchPermissions = null;

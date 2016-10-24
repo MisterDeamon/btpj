@@ -82,6 +82,9 @@
     <!--the js for jquery.mCustomScrollbar-->
     <script src="<%=protonPath%>/assets/jQuery.emoji/lib/script/jquery.mCustomScrollbar.min.js"></script>
     <script src="<%=protonPath%>/assets/jQuery.emoji/js/jquery.emoji.js"></script>
+    <script src="<%=protonPath%>/assets/js/jquery.cookie.js"></script>
+    <script src="<%=protonPath%>/assets/js/json2.js"></script>
+    <script src="<%=protonPath%>/assets/js/json.js"></script>
 
 
 
@@ -89,6 +92,36 @@
         var local = window.location;
         var contextPath = local.pathname.split("/")[1];
         var ctx = local.protocol+"//"+local.host;
+
+        $.ajax({
+            url:'${basePath}/management/weatherInfo',
+            type:'get',
+            dataType:'json',
+            contentType:'application/json',
+            success:function(data){
+                $("i[name='nicon']").addClass(data.nowWeather.codeIcon);
+                $("div[name='week']").html(data.nowWeather.date);
+                $("small[name='codeText']").html(data.nowWeather.codeText);
+                $("div[name='temp']").html(data.nowWeather.temp+"°C");
+                $("strong[name='cityName']").append(data.nowWeather.cityName);
+
+                $("i[name='fcon']").each(function(index,item){
+                    $(item).addClass(data.forecastWeather[index].codeIcon);
+                });
+                $("span[name='fweek']").each(function(index,item){
+                    $(item).html(data.forecastWeather[index].date);
+                });
+                $("p[name='ftemp']").each(function(index,item){
+                    $(item).html(data.forecastWeather[index].temp);
+                });
+                $("small[name='fcodeText']").each(function(index,item){
+                    $(item).html(data.forecastWeather[index].codeText);
+                });
+            }
+        });
+    </script>
+    <script type="application/javascript">
+
     </script>
 </head>
 <body>
@@ -273,6 +306,55 @@
                     </ol>
                 </div>
             </div>
+            <div class="row">
+                <%-- start weather info--%>
+                <div class="col-lg-3 col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body weather widget">
+                            <div class="today text-center">
+                                <h4 class="blue"><strong name="cityName"><i class="fa fa-map-marker fa-3x green"></i></strong></h4>
+                                <i class="climacon" name="nicon"></i>
+
+                                <div class="row">
+                                    <div class="col-xs-5 text-right date">
+                                        <div name="week"></div>
+                                        <small name="codeText"></small>
+                                    </div><!--/.col-->
+
+                                    <div class="col-xs-7 text-left temp" name="temp">
+                                    </div><!--/.col-->
+                                </div><!--/.row-->
+                            </div>
+
+                            <div class="forecast row text-center">
+                                <div class="col-xs-4">
+                                    <i class="climacon" name="fcon"></i>
+                                    <span class="label label-primary" name="fweek"></span>
+                                    <small name="fcodeText"></small>
+                                    <p name="ftemp"></p>
+                                </div><!--/.col-->
+
+                                <div class="col-xs-4">
+                                    <i class="climacon" name="fcon"></i>
+                                    <span class="label label-primary" name="fweek"></span>
+                                    <small name="fcodeText"></small>
+                                    <p name="ftemp"></p>
+                                </div><!--/.col-->
+
+                                <div class="col-xs-4">
+                                    <i class="climacon" name="fcon"></i>
+                                    <span class="label label-primary"  name="fweek"></span>
+                                    <small name="fcodeText"></small>
+                                    <p name="ftemp"></p>
+                                </div><!--/.col-->
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%--weather info end--%>
+            </div>
+
         </div>
 
 
