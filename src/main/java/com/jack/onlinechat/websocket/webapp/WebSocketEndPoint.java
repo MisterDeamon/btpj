@@ -142,11 +142,6 @@ public class WebSocketEndPoint extends AbstractWebSocketHandler {
 
     }
 
-
-//    {'from':'Jack','target':'Lucy','msgContent':'Hello Lucy\, I\'m Jack'}
-
-
-
     //连接关闭时执行
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {

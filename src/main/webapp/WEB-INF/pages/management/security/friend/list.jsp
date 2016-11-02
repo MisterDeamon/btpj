@@ -1,6 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
 <%@ include file="../../../common/proton.jsp" %>
+<script src="<%=protonPath%>/assets/js/jquery.feedback.js"></script>
+
 <div class="row">
     <div class="col-lg-12">
         <div class="panel panel-default">
@@ -23,6 +25,12 @@
                                        href="<%=basePath%>/management/security/friend/addFriend"
                                        title="添加好友" id="create" data-toggle="modal">
                                         <i class="fa fa-search-plus "></i>
+                                    </a>
+
+                                    <a class="create btn btn-success "
+                                       href="#"
+                                       title="give us feedback" id="feedbackAccess" data-toggle="modal">
+                                        <i class="fa">FeedBack</i>
                                     </a>
                                     <form class="navbar-form navbar-right" style="margin-top:0px;" method="post"
                                           id="search"

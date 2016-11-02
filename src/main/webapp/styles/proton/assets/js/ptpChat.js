@@ -18,13 +18,11 @@ $("#editor").emoji({
 
 //load chat history
 $("input[name='chatWith']").each(function(){
-    console.log("coming load history");
     var chatWith=$(this).val();
     var userName=$("span[name='userName']").text();
     var cookieName = userName+"chatHistoryWith"+chatWith;
     var cookieHis=$.cookie(cookieName);
     if(cookieHis!=undefined){
-        console.log($.cookie(cookieName).replace(/"\(/,"(").replace(/\)"/,")").replace(/\n\n/g,""));
         cookieHis= (eval($.cookie(cookieName).replace(/"\(/,"(").replace(/\)"/,")").replace(/\n\n/g,"").replace(/"\\'/g,"'").replace(/\\'/g,"'")));
         var hisMsgContent=cookieHis.chatHisContent;
         $(this).parent().parent().find(".hisContent").append(hisMsgContent);
