@@ -6,6 +6,7 @@ import com.jack.security.shiro.ShiroDbRealm;
 import com.jack.utils.Pager;
 import com.jack.utils.StringUtils;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,7 +35,7 @@ public class SecurityMenuController extends BaseController {
     private static final String MODIFY = "management/security/menu/modify";
 
     @RequestMapping(value = {"/list", ""}, method = {RequestMethod.GET, RequestMethod.POST})
-//    @RequiresPermissions("Menu:view")
+    @RequiresPermissions("Menu:view")
     public String list(HttpServletRequest request, SecurityMenu searchMenu, Model model) {
         Pager<SecurityMenu> pager = new Pager<SecurityMenu>();
         pager.setPageSize(10);
@@ -138,10 +139,7 @@ public class SecurityMenuController extends BaseController {
             map.put("success", false);
             e.printStackTrace();
         }
-
         return getJsonResult(map);
     }
-
-
 
 }

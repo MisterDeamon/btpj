@@ -23,7 +23,7 @@ public class Climacon {
         init();
     }
 
-    public static void init(){
+    private static void init(){
         if(prop == null){
             prop = new Properties();
         }

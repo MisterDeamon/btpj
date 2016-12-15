@@ -1,0 +1,6 @@
+1: First, edit the configure file '/etc/ssh/sshd_configure' and open the three settings as following: RSAAuthentication yes 
+PubkeyAuthentication yes AuthorizedKeysFile .ssh/authorized_keys, after that, restart the sshd service with the command 'service sshd restart'; 
+2: use the command 'ssh-keygen -t dsa' to create the private and public keys 
+3: move the id_rsa.pub to the remote service pc and rename it as authorized_eys 
+4: change the authorized_keys file's right as 644 with the command 'chmod 644 authorized_keys' 
+5: It's done!

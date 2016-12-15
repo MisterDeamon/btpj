@@ -25,7 +25,9 @@ $.fn.make2048 = function(option){
             {level: 8, value: 512, style:{ "background-color": "rgb(236,200,80)", "color":"rgb(255,247,235)", "font-size": 42 }},
             {level: 9, value: 1024, style:{ "background-color": "rgb(237,197,63)", "color":"rgb(255,247,235)", "font-size": 34 }},
             {level: 10, value: 2048, style:{ "background-color": "rgb(238,194,46)", "color":"rgb(255,247,235)", "font-size": 34 }},
-            {level: 11, value: 4096, style:{ "background-color": "rgb(61,58,51)", "color":"rgb(255,247,235)", "font-size": 34 }}
+            {level: 11, value: 4096, style:{ "background-color": "rgb(61,58,51)", "color":"rgb(255,247,235)", "font-size": 34 }},
+            {level: 12, value: 8182, style:{ "background-color": "rgb(61,58,51)", "color":"rgb(255,247,235)", "font-size": 34 }},
+            {level: 13, value: 8182*2, style:{ "background-color": "rgb(61,58,51)", "color":"rgb(255,247,235)", "font-size": 34 }}
         ],
         animateSpeed: 200
     }

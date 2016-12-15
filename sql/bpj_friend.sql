@@ -6,6 +6,7 @@ show tables;
 
 
 
+select * from bpj_friend;
 create table bpj_friend(
 user_id varchar(30),
 friend_user_id varchar(30),
@@ -78,3 +79,12 @@ group by g.group_id;
 
 delete from bpj_friend_group where user_id is null;
 
+drop table test_del;
+create table test_del(
+test_date datetime 
+);
+insert into test_del values(date_format('2016-09-19','%Y-%m-%d '));
+select * from test_del;
+
+
+DELETE FROM test_del WHERE test_date=to_date('2016-09-18','yyyy-MM-dd %H:%m:%s');

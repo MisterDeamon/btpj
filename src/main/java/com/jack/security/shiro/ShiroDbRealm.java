@@ -34,10 +34,8 @@ public class ShiroDbRealm extends AuthorizingRealm {
     private static final int SALT_SIZE = 8;
     private static final String ALGORITHM = "SHA-1";
 
-    @Autowired
     protected SecurityUserService securityUserService;
 
-    @Autowired
     protected SecurityUserRoleService securityUserRoleService;
 
 

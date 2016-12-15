@@ -10,6 +10,7 @@ import com.jack.security.shiro.ShiroDbRealm;
 import com.jack.utils.Pager;
 import com.jack.utils.StringUtils;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,7 +45,7 @@ public class SecurityRoleController extends BaseController {
     private static final String RIGHTSET = "management/security/role/rightSet";
 
     @RequestMapping(value = {"/list", ""}, method = {RequestMethod.GET, RequestMethod.POST})
-//    @RequiresPermissions("Role:view")
+    @RequiresPermissions("Role:view")
     public String list(HttpServletRequest request, SecurityRole searchRole, SecurityPermission searchPermission, Model model) {
         Pager<SecurityRole> pager = new Pager<SecurityRole>();
         pager.setPageSize(10);

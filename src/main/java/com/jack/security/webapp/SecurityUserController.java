@@ -46,8 +46,6 @@ public class SecurityUserController extends BaseController{
     private static final String MODIFY = "management/security/user/modify";
     private static final String ROLESET = "management/security/user/roleSet";
 
-
-    /**/
     @RequestMapping(value={"/list",""},method= {RequestMethod.GET,RequestMethod.POST})
     @RequiresPermissions("User:view")
     public String LIST(Model model,SecurityUser user,SecurityRole searchRole,HttpServletRequest request){

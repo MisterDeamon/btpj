@@ -6,6 +6,7 @@ import com.jack.security.shiro.ShiroDbRealm;
 import com.jack.utils.Pager;
 import com.jack.utils.StringUtils;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -108,9 +109,8 @@ public class SecurityPermissionController extends BaseController {
         return getJsonResult(map);
     }
 
-
     @RequestMapping(value = "/delete", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-//    @RequiresPermissions("Role:delete")
+    @RequiresPermissions("Role:delete")
     public
     @ResponseBody
     String deleteRight(@RequestParam("ids") String[] roleIds) {
@@ -128,7 +128,5 @@ public class SecurityPermissionController extends BaseController {
 
         return getJsonResult(map);
     }
-
-
 
 }

@@ -38,35 +38,31 @@ public class StringUtils {
     }
 
     public static String getEncoding(String str) {
-        String encode = "GB2312";
+        StringBuilder encode = new StringBuilder("GB2312");
         try {
-            if (str.equals(new String(str.getBytes(encode), encode))) {
-                String s = encode;
-                return s;
+            if (str.equals(new String(str.getBytes(encode.toString()), encode.toString()))) {
+                return encode.toString();
             }
         } catch (Exception exception) {
         }
-        encode = "ISO-8859-1";
+        encode = encode.replace(0,encode.length(),"ISO-8859-1");
         try {
-            if (str.equals(new String(str.getBytes(encode), encode))) {
-                String s1 = encode;
-                return s1;
+            if (str.equals(new String(str.getBytes(encode.toString()), encode.toString()))) {
+                return encode.toString();
             }
         } catch (Exception exception1) {
         }
-        encode = "UTF-8";
+        encode = encode.replace(0,encode.length(),"UTF-8");
         try {
-            if (str.equals(new String(str.getBytes(encode), encode))) {
-                String s2 = encode;
-                return s2;
+            if (str.equals(new String(str.getBytes(encode.toString()), encode.toString()))) {
+                return encode.toString();
             }
         } catch (Exception exception2) {
         }
-        encode = "GBK";
+        encode = encode.replace(0,encode.length(),"GBK");
         try {
-            if (str.equals(new String(str.getBytes(encode), encode))) {
-                String s3 = encode;
-                return s3;
+            if (str.equals(new String(str.getBytes(encode.toString()), encode.toString()))) {
+                return encode.toString();
             }
         } catch (Exception exception3) {
         }

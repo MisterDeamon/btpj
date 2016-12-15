@@ -30,9 +30,6 @@ public class IndexController extends BaseController{
 
     private static final String INDEX="management/index/index";
 
-
-    @Autowired
-    private SecurityUserService userService;
     @Autowired
     private SecurityMenuService sercurityMenuService;
     @Autowired
@@ -124,9 +121,7 @@ public class IndexController extends BaseController{
     private String getRemortIP(HttpServletRequest request) {
 
         if (request.getHeader("x-forwarded-for") == null) {
-
             return request.getRemoteAddr();
-
         }
 
         return request.getHeader("x-forwarded-for");

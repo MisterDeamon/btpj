@@ -27,7 +27,9 @@ public class SystemLogoutFilter extends LogoutFilter {
         String redirectUrl = getRedirectUrl(request, response, subject);
         try {
             ShiroDbRealm.ShiroUser shiroUser =(ShiroDbRealm.ShiroUser) subject.getPrincipal();
-            userService.changeLoginState(0,shiroUser.getId());
+            if(shiroUser!=null){
+                userService.changeLoginState(0,shiroUser.getId());
+            }
             subject.logout();
         } catch (SessionException ise) {
             ise.printStackTrace();

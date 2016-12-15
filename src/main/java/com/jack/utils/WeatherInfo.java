@@ -116,10 +116,7 @@ public class WeatherInfo {
         Map<String,Object> map = new HashMap<String, Object>();
         String city = getCityName(requestUrl,"UTF-8");
 
-        System.setProperty("http.proxySet", "true");
-        System.setProperty("http.proxyHost", "web-proxy.atl.hp.com");
-        System.setProperty("http.proxyPort", "8080");
-
+        ProxyUtil.openHpProxy();
 
         String httpUrl = "http://apis.baidu.com/heweather/weather/free";
         String httpArg = "city="+ new PinyinTool().toPinYin(city,"", PinyinTool.Type.LOWERCASE);
@@ -171,9 +168,7 @@ public class WeatherInfo {
         HttpURLConnection connection = null;
         try {
 
-            System.setProperty("http.proxySet", "true");
-            System.setProperty("http.proxyHost", "web-proxy.atl.hp.com");
-            System.setProperty("http.proxyPort", "8080");
+            ProxyUtil.openHpProxy();
 
             url = new URL(urlStr+"?ip="+content);
             connection = (HttpURLConnection) url.openConnection();// 新建连接实例
